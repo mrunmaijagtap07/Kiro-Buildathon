@@ -789,7 +789,7 @@ textarea.form-control { resize: vertical; min-height: 120px; line-height: 1.6; }
 
 /* ── Hero (home page) ─────────────────────────────────────── */
 .hero {
-  background: linear-gradient(135deg, var(--sidebar-bg) 0%, #2d1b69 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0A3D2E 100%);
   color: white;
   padding: 80px 40px;
   text-align: center;
