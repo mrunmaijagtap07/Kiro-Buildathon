@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Resubmit Project{% endblock %}
+{% block page_title %}Resubmit Project{% endblock %}
+
+{% block content %}
+<div class="container-md">
+
+  <div class="page-header">
+    <h1 class="page-header-title">Resubmit: {{ project.title }}</h1>
+    <p class="page-header-subtitle">Address the requested revisions and resubmit for review.</p>
+  </div>
+
+  <!-- Current review feedback -->
+  {% set latest = reviews[0] if reviews is defined and reviews else none %}
+
+  <form method="POST" action="{{ url_for('student.resubmit', project_id=project.project_id) }}"
+        enctype="multipart/form-data" novalidate>
+
+    <!-- Update Abstract (optional) -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Update Abstract (Optional)</span></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label" for="abstract">Abstract</label>
+          <textarea id="abstract" name="abstract" class="form-control" rows="6"
+                    placeholder="Leave empty to keep existing abstract…"
+                    minlength="50" maxlength="5000">{{ project.abstract }}</textarea>
+          <div class="form-hint">Only update if you are making significant changes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Update Faculty Guide (optional) -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Faculty Guide</span></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label" for="guide_id">Faculty Guide</label>
+          <select id="guide_id" name="guide_id" class="form-control form-select">
+            <option value="">Keep current guide</option>
+            {% for faculty in faculty_list %}
+            <option value="{{ faculty.user_id }}"
+              {% if project.guide_id == faculty.user_id %}selected{% endif %}>
+              {{ faculty.full_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Update Tags (optional) -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Technology Tags</span></div>
+      <div class="card-body">
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          {% for tag in tags_list %}
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;
+                        padding:6px 12px; background:var(--color-surface-alt);
+                        border:1.5px solid var(--color-border); border-radius:var(--radius-full);
+                        font-size:.85rem; transition:var(--transition);"
+                 class="tag-checkbox-label">
+            <input type="checkbox" name="tags" value="{{ tag.tag_id }}"
+                   style="display:none;" class="tag-checkbox"
+                   {% if tag.tag_name in current_tags %}checked{% endif %}>
+            <span>{{ tag.tag_name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Replace files (optional) -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Replace Files (Optional)</span></div>
+      <div class="card-body">
+        <p class="text-muted text-sm mb-3">
+          Upload new files only if you need to replace existing ones. Leave blank to keep current files.
+        </p>
+
+        <div class="form-row mb-3">
+          <div class="form-group">
+            <label class="form-label">New Report PDF</label>
+            <div class="file-upload">
+              <input type="file" name="report_pdf" id="report_pdf" accept=".pdf">
+              <div class="file-upload-icon">📄</div>
+              <div class="file-upload-text">
+                {% for att in current_attachments if att.file_type == 'REPORT_PDF' %}
+                Current: {{ att.original_name }}
+                {% else %}
+                Click to upload new PDF
+                {% endfor %}
+              </div>
+              <div class="file-upload-name" id="report-name"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Source ZIP</label>
+            <div class="file-upload">
+              <input type="file" name="source_zip" id="source_zip" accept=".zip">
+              <div class="file-upload-icon">💾</div>
+              <div class="file-upload-text">
+                {% for att in current_attachments if att.file_type == 'SOURCE_ZIP' %}
+                Current: {{ att.original_name }}
+                {% else %}
+                Click to upload new ZIP
+                {% endfor %}
+              </div>
+              <div class="file-upload-name" id="source-name"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">New Diagram (Optional)</label>
+          <div class="file-upload" style="max-width:400px;">
+            <input type="file" name="diagram" id="diagram"
+                   accept=".pdf,.png,.jpg,.jpeg,.gif,.svg">
+            <div class="file-upload-icon">🖼️</div>
+            <div class="file-upload-text">Click to replace diagram</div>
+            <div class="file-upload-name" id="diagram-name"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 justify-between">
+      <a href="{{ url_for('student.project_detail', project_id=project.project_id) }}"
+         class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary btn-lg">🔄 Resubmit for Review</button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.querySelectorAll('.tag-checkbox').forEach(cb => {
+    function update() {
+      const label = cb.closest('.tag-checkbox-label');
+      if (cb.checked) {
+        label.style.borderColor = 'var(--color-primary)';
+        label.style.background  = 'var(--color-primary-light)';
+        label.style.color       = 'var(--color-primary)';
+      } else {
+        label.style.borderColor = 'var(--color-border)';
+        label.style.background  = 'var(--color-surface-alt)';
+        label.style.color       = '';
+      }
+    }
+    cb.addEventListener('change', update);
+    update();
+  });
+
+  ['report_pdf','source_zip','diagram'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('change', () => {
+      document.getElementById(id.replace('_','-').replace('zip','name').replace('pdf','name'))?.remove();
+      const n = document.createElement('div');
+      n.className = 'file-upload-name';
+      n.textContent = el.files[0]?.name || '';
+      el.closest('.file-upload').appendChild(n);
+    });
+  });
+</script>
+{% endblock %}

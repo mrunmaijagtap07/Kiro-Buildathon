@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}Faculty Dashboard{% endblock %}
+{% block page_title %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-header-title">Welcome, {{ session.full_name }} 👋</h1>
+      <p class="page-header-subtitle">Projects assigned to you for review</p>
+    </div>
+    <a href="{{ url_for('faculty.reviews') }}" class="btn btn-primary">
+      📝 View All Reviews
+    </a>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="stat-grid mb-4">
+  <div class="stat-card">
+    <div class="stat-icon blue">📋</div>
+    <div class="stat-value">{{ stats.total or 0 }}</div>
+    <div class="stat-label">Total Assigned</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon yellow">⏳</div>
+    <div class="stat-value">{{ stats.pending or 0 }}</div>
+    <div class="stat-label">Pending Review</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">📝</div>
+    <div class="stat-value">{{ stats.needs_revision or 0 }}</div>
+    <div class="stat-label">Awaiting Revision</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">✅</div>
+    <div class="stat-value">{{ stats.approved or 0 }}</div>
+    <div class="stat-label">Approved</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">✗</div>
+    <div class="stat-value">{{ stats.rejected or 0 }}</div>
+    <div class="stat-label">Rejected</div>
+  </div>
+</div>
+
+<!-- Pending Reviews -->
+<div class="card mb-4">
+  <div class="card-header d-flex justify-between align-center">
+    <span class="card-title">⏳ Pending Review</span>
+    <span class="badge badge-pending">{{ pending_projects|length }}</span>
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if pending_projects %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Project Title</th>
+            <th>Lead Student</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Submitted</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for proj in pending_projects %}
+          <tr>
+            <td>
+              <a href="{{ url_for('faculty.review', project_id=proj.project_id) }}"
+                 class="font-bold" style="color:var(--color-text);">{{ proj.title }}</a>
+            </td>
+            <td class="text-muted text-sm">{{ proj.lead_name }}</td>
+            <td class="text-muted text-sm">{{ proj.dept_name }}</td>
+            <td class="text-muted text-sm">{{ proj.academic_year }}</td>
+            <td class="text-muted text-sm">
+              {{ proj.submitted_at.strftime('%d %b %Y') if proj.submitted_at else '—' }}
+            </td>
+            <td>
+              <a href="{{ url_for('faculty.review', project_id=proj.project_id) }}"
+                 class="btn btn-primary btn-sm">Review →</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:32px;">
+      <div class="empty-state-icon">✅</div>
+      <div class="empty-state-title">Your review queue is clear</div>
+      <div class="empty-state-text">No projects are currently awaiting review.</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Needs Revision -->
+{% if revision_projects %}
+<div class="card mb-4">
+  <div class="card-header d-flex justify-between align-center">
+    <span class="card-title">📝 Awaiting Student Revision</span>
+    <span class="badge badge-revision">{{ revision_projects|length }}</span>
+  </div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr><th>Project</th><th>Lead</th><th>Department</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for proj in revision_projects %}
+          <tr>
+            <td><a href="{{ url_for('faculty.review', project_id=proj.project_id) }}"
+                   style="color:var(--color-text); font-weight:600;">{{ proj.title }}</a></td>
+            <td class="text-muted text-sm">{{ proj.lead_name }}</td>
+            <td class="text-muted text-sm">{{ proj.dept_name }}</td>
+            <td><a href="{{ url_for('faculty.review', project_id=proj.project_id) }}" class="btn btn-secondary btn-sm">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Recent review activity -->
+{% if recent_reviews %}
+<div class="card">
+  <div class="card-header"><span class="card-title">Recent Review Activity</span></div>
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table class="table">
+        <thead><tr><th>Project</th><th>Decision</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for r in recent_reviews %}
+          <tr>
+            <td>
+              <a href="{{ url_for('faculty.review', project_id=r.project_id) }}"
+                 style="color:var(--color-text); font-weight:600;">{{ r.title }}</a>
+            </td>
+            <td>
+              <span class="badge
+                {% if r.decision == 'APPROVED' %}badge-approved
+                {% elif r.decision == 'REJECTED' %}badge-rejected
+                {% else %}badge-revision{% endif %}">
+                {{ decision_display(r.decision) }}
+              </span>
+            </td>
+            <td class="text-muted text-sm">
+              {{ r.reviewed_at.strftime('%d %b %Y') if r.reviewed_at else '—' }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CampusArchive{% endblock %} — CampusArchive</title>
+  <meta name="description" content="CampusArchive — Institutional Student Project Repository">
+
+  <!-- Prevent theme flash -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('ca-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="public-layout">
+
+  <!-- Public navbar -->
+  <nav class="public-nav" role="navigation" aria-label="Site navigation">
+    <a href="{{ url_for('main.home') }}" class="nav-brand">
+      <div class="brand-icon" aria-hidden="true"></div>
+      <span>CampusArchive</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="{{ url_for('main.home') }}"
+         class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('projects.browse') }}"
+         class="nav-link {% if request.endpoint == 'projects.browse' %}active{% endif %}">Browse Projects</a>
+      <a href="{{ url_for('main.about') }}"
+         class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}">About</a>
+    </div>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span class="theme-icon-moon">🌙</span>
+        <span class="theme-icon-sun hidden">☀️</span>
+      </button>
+      {% if session.get('user_id') %}
+        {% set role = session.get('role', '') %}
+        {% if role == 'STUDENT' %}
+          <a href="{{ url_for('student.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+        {% elif role == 'FACULTY' %}
+          <a href="{{ url_for('faculty.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+        {% elif role == 'ADMIN' %}
+          <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+        {% endif %}
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary btn-sm">Logout</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-sm">Log In</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Register</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div style="padding: 16px 40px 0;">
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}" data-auto-dismiss role="alert">
+        <span>{{ message }}</span>
+        <button class="alert-close" aria-label="Dismiss">✕</button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="public-footer">
+    <div class="footer-content">
+      <div class="footer-text">
+        <strong style="color:#fff">CampusArchive</strong> — Institutional Student Project Repository<br>
+        <span style="font-size:.8rem">Preserving student innovation for future generations.</span>
+      </div>
+      <div class="footer-text">
+        <a href="{{ url_for('projects.browse') }}" style="color:var(--sidebar-text); margin-right:16px;">Browse Projects</a>
+        <a href="{{ url_for('main.about') }}" style="color:var(--sidebar-text);">About</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div id="toast-container" role="status" aria-live="polite"></div>
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,243 @@
+{% extends "base.html" %}
+{% block title %}Review: {{ project.title }}{% endblock %}
+{% block page_title %}Review Project{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-header-title">{{ project.title }}</h1>
+      <div class="d-flex align-center gap-2 mt-1">
+        <span class="badge {{ status_badge_class(project.status) }}">{{ status_display(project.status) }}</span>
+        <span class="text-muted text-sm">Lead: {{ project.lead_name }}</span>
+        <span class="text-muted text-sm">·</span>
+        <span class="text-muted text-sm">{{ project.dept_name }}</span>
+      </div>
+    </div>
+    <a href="{{ url_for('faculty.reviews') }}" class="btn btn-secondary btn-sm">← Back to Queue</a>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns: 3fr 2fr; gap:24px; align-items:start;">
+
+  <!-- Left: project detail -->
+  <div>
+
+    <!-- Abstract -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Abstract</span></div>
+      <div class="card-body">
+        <p style="line-height:1.8;">{{ project.abstract }}</p>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Project Team</span></div>
+      <div class="card-body">
+        {% for author in authors %}
+        <div style="padding:8px 0; {% if not loop.last %}border-bottom:1px solid var(--color-border);{% endif %}">
+          <span class="font-bold text-sm">{{ author.full_name }}</span>
+          {% if author.roll_or_emp_id %}
+          <span class="text-muted text-xs"> — {{ author.roll_or_emp_id }}</span>
+          {% endif %}
+          {% if author.email %}
+          <div class="text-muted text-xs">{{ author.email }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Files -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Submitted Files</span></div>
+      <div class="card-body">
+        {% for att in attachments %}
+        <div class="d-flex align-center justify-between gap-2 mb-2"
+             style="padding:12px; background:var(--color-surface-alt); border-radius:var(--radius);">
+          <div>
+            <div class="font-bold text-sm">
+              {% if att.file_type == 'REPORT_PDF' %}📄{% elif att.file_type == 'SOURCE_ZIP' %}💾{% else %}🖼️{% endif %}
+              {{ att.original_name }}
+            </div>
+            <div class="text-muted text-xs">{{ att.file_type }} · {{ human_readable_size(att.file_size_bytes) }}</div>
+          </div>
+          <a href="{{ url_for('projects.download', project_id=project.project_id, attachment_id=att.attachment_id) }}"
+             class="btn btn-secondary btn-sm">Download</a>
+        </div>
+        {% else %}
+        <p class="text-muted text-sm">No files attached.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Review history -->
+    {% if review_history %}
+    <div class="card">
+      <div class="card-header"><span class="card-title">Previous Reviews</span></div>
+      <div class="card-body" style="padding:0;">
+        {% for r in review_history %}
+        <div style="padding:14px 20px; {% if not loop.last %}border-bottom:1px solid var(--color-border);{% endif %}">
+          <div class="d-flex align-center gap-2 mb-1">
+            <span class="badge
+              {% if r.decision == 'APPROVED' %}badge-approved
+              {% elif r.decision == 'REJECTED' %}badge-rejected
+              {% else %}badge-revision{% endif %}">
+              {{ decision_display(r.decision) }}
+            </span>
+            <span class="text-muted text-xs">
+              {{ r.faculty_name }} · {{ r.reviewed_at.strftime('%d %b %Y') if r.reviewed_at else '' }}
+            </span>
+          </div>
+          {% if r.comments %}
+          <p class="text-sm" style="line-height:1.7; color:var(--color-text-muted);">{{ r.comments }}</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <!-- Right: review form -->
+  <div>
+    <div class="card" style="position:sticky; top:80px;">
+      <div class="card-header">
+        <span class="card-title">
+          {% if project.status in ('PENDING', 'NEEDS_REVISION') %}
+            Submit Review Decision
+          {% else %}
+            Review Submitted
+          {% endif %}
+        </span>
+      </div>
+      <div class="card-body">
+
+        <!-- Metadata sidebar -->
+        <dl style="margin-bottom:20px; display:flex; flex-direction:column; gap:10px; font-size:.875rem;">
+          <div>
+            <dt style="color:var(--color-text-muted); font-size:.75rem; text-transform:uppercase; font-weight:600;">Year</dt>
+            <dd>{{ project.academic_year }}–{{ project.academic_year + 1 }}</dd>
+          </div>
+          <div>
+            <dt style="color:var(--color-text-muted); font-size:.75rem; text-transform:uppercase; font-weight:600;">Lead Student</dt>
+            <dd>{{ project.lead_name }}</dd>
+          </div>
+          {% if tags %}
+          <div>
+            <dt style="color:var(--color-text-muted); font-size:.75rem; text-transform:uppercase; font-weight:600; margin-bottom:6px;">Technologies</dt>
+            <dd>
+              <div style="display:flex; flex-wrap:wrap; gap:4px;">
+                {% for tag in tags %}
+                <span class="badge badge-tag" style="font-size:.72rem;">{{ tag.tag_name }}</span>
+                {% endfor %}
+              </div>
+            </dd>
+          </div>
+          {% endif %}
+        </dl>
+
+        <div class="divider"></div>
+
+        {% if project.status in ('PENDING', 'NEEDS_REVISION') %}
+        <form method="POST" action="{{ url_for('faculty.review', project_id=project.project_id) }}"
+              id="review-form">
+
+          <div class="form-group">
+            <label class="form-label">Decision <span class="required">*</span></label>
+            <div class="review-decision-grid">
+
+              <label class="decision-card" id="card-approve">
+                <input type="radio" name="decision" value="APPROVED" required>
+                <div class="decision-icon">✅</div>
+                <div class="decision-label">Approve</div>
+              </label>
+
+              <label class="decision-card" id="card-revision">
+                <input type="radio" name="decision" value="REVISION_REQUESTED">
+                <div class="decision-icon">📝</div>
+                <div class="decision-label">Request Revision</div>
+              </label>
+
+              <label class="decision-card" id="card-reject">
+                <input type="radio" name="decision" value="REJECTED">
+                <div class="decision-icon">❌</div>
+                <div class="decision-label">Reject</div>
+              </label>
+
+            </div>
+          </div>
+
+          <div class="form-group" id="comments-group">
+            <label class="form-label" for="comments">
+              Comments
+              <span class="required" id="comments-required" style="display:none;">*</span>
+            </label>
+            <textarea id="comments" name="comments" class="form-control" rows="5"
+                      placeholder="Provide feedback for the student team…"
+                      maxlength="2000"></textarea>
+            <div class="form-hint" id="comments-hint"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100" id="submit-review-btn" disabled>
+            Submit Review
+          </button>
+        </form>
+        {% else %}
+        <p class="text-muted text-sm">
+          This project has already been {{ status_display(project.status) | lower }}.
+          No further review action is required.
+        </p>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const cards = {
+    APPROVED:           { card: document.getElementById('card-approve'),  cls: 'selected-approve' },
+    REJECTED:           { card: document.getElementById('card-reject'),   cls: 'selected-reject'  },
+    REVISION_REQUESTED: { card: document.getElementById('card-revision'), cls: 'selected-revision'},
+  };
+  const submitBtn      = document.getElementById('submit-review-btn');
+  const commentsHint   = document.getElementById('comments-hint');
+  const commentsReq    = document.getElementById('comments-required');
+  const commentsField  = document.getElementById('comments');
+
+  document.querySelectorAll('input[name=decision]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      // Reset all cards
+      Object.values(cards).forEach(({card, cls}) => card?.classList.remove(cls));
+      // Highlight selected
+      const sel = cards[radio.value];
+      sel?.card?.classList.add(sel.cls);
+      // Update comments requirement
+      if (radio.value === 'APPROVED') {
+        commentsHint.textContent = 'Comments are optional for approvals.';
+        commentsReq.style.display = 'none';
+        commentsField.required = false;
+      } else {
+        commentsHint.textContent = 'Required — explain your decision to the student.';
+        commentsReq.style.display = '';
+        commentsField.required = true;
+      }
+      submitBtn.disabled = false;
+    });
+  });
+
+  document.getElementById('review-form')?.addEventListener('submit', e => {
+    if (!confirm('Are you sure you want to submit this review? This action will update the project status.')) {
+      e.preventDefault();
+    }
+  });
+</script>
+{% endblock %}

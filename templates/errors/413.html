@@ -1,0 +1,21 @@
+{% extends "public_base.html" %}
+{% block title %}File Too Large{% endblock %}
+{% block content %}
+<div class="error-page-container">
+  <div class="error-content">
+    <div class="error-icon">📦</div>
+    <h1 class="error-title">413 — File Too Large</h1>
+    <p class="error-description">
+      The file you tried to upload exceeds the maximum allowed size.
+      Please compress your file and try again.
+    </p>
+    <div class="error-actions">
+      <a href="javascript:history.back()" class="btn btn-primary">
+        ← Go Back
+      </a>
+    </div>
+  </div>
+</div>
+
+{% include 'errors/error_styles.html' %}
+{% endblock %}

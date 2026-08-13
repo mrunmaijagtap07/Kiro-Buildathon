@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}My Submissions{% endblock %}
+{% block page_title %}My Submissions{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-header-title">My Submissions</h1>
+      <p class="page-header-subtitle">All projects you have submitted as lead student</p>
+    </div>
+    <a href="{{ url_for('student.create_project') }}" class="btn btn-primary">➕ New Submission</a>
+  </div>
+</div>
+
+{% if projects %}
+<div class="projects-grid">
+  {% for proj in projects %}
+  <a href="{{ url_for('student.project_detail', project_id=proj.project_id) }}" class="project-card">
+    <div class="d-flex justify-between align-center">
+      <div class="project-card-title">{{ proj.title }}</div>
+      <span class="badge {{ status_badge_class(proj.status) }}">{{ status_display(proj.status) }}</span>
+    </div>
+    <div class="project-card-meta">
+      <span>📅 {{ proj.academic_year }}–{{ proj.academic_year + 1 }}</span>
+      <span>🏛️ {{ proj.dept_name }}</span>
+      <span>👨‍🏫 {{ proj.guide_name }}</span>
+    </div>
+    {% if proj.tags %}
+    <div class="project-card-tags">
+      {% for tag in proj.tags[:4] %}
+      <span class="badge badge-tag">{{ tag.tag_name }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="project-card-footer">
+      <span>Submitted {{ proj.submitted_at.strftime('%d %b %Y') if proj.submitted_at else '—' }}</span>
+      <span style="color:var(--color-primary);">View →</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card">
+  <div class="card-body">
+    <div class="empty-state">
+      <div class="empty-state-icon">📂</div>
+      <div class="empty-state-title">No submissions yet</div>
+      <div class="empty-state-text">You haven't submitted a project yet.</div>
+      <a href="{{ url_for('student.create_project') }}" class="btn btn-primary mt-3">Submit Your First Project</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

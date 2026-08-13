@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }}{% endblock %}
+{% block page_title %}Project Detail{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-header-title">{{ project.title }}</h1>
+      <div class="d-flex align-center gap-2 mt-2">
+        <span class="badge {{ status_badge_class(project.status) }}" style="font-size:.85rem; padding:5px 14px;">
+          {{ status_display(project.status) }}
+        </span>
+        <span class="text-muted text-sm">
+          Submitted {{ project.submitted_at.strftime('%d %b %Y at %H:%M') if project.submitted_at else '—' }}
+        </span>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      {% if project.status == 'NEEDS_REVISION' and is_lead %}
+      <a href="{{ url_for('student.resubmit', project_id=project.project_id) }}"
+         class="btn btn-warning">
+        🔄 Resubmit Revision
+      </a>
+      {% endif %}
+      {% if project.status == 'APPROVED' %}
+      <a href="{{ url_for('projects.detail', project_id=project.project_id) }}"
+         class="btn btn-outline btn-sm">View Public Page →</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
+
+  <div>
+    <!-- Abstract -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Abstract</span></div>
+      <div class="card-body"><p style="line-height:1.8;">{{ project.abstract }}</p></div>
+    </div>
+
+    <!-- Faculty feedback -->
+    {% if reviews %}
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Faculty Review History</span></div>
+      <div class="card-body" style="padding:0;">
+        {% for review in reviews %}
+        <div style="padding:16px 20px; {% if not loop.last %}border-bottom:1px solid var(--color-border);{% endif %}">
+          <div class="d-flex align-center gap-2 mb-2">
+            <span class="badge
+              {% if review.decision == 'APPROVED' %}badge-approved
+              {% elif review.decision == 'REJECTED' %}badge-rejected
+              {% else %}badge-revision{% endif %}">
+              {{ decision_display(review.decision) }}
+            </span>
+            <span class="text-muted text-sm">by {{ review.faculty_name }}</span>
+            <span class="text-muted text-xs">
+              · {{ review.reviewed_at.strftime('%d %b %Y') if review.reviewed_at else '' }}
+            </span>
+          </div>
+          {% if review.comments %}
+          <p class="text-sm" style="line-height:1.7; padding:12px; background:var(--color-surface-alt); border-radius:var(--radius);">
+            {{ review.comments }}
+          </p>
+          {% else %}
+          <p class="text-muted text-sm">No written feedback provided.</p>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Faculty Review</span></div>
+      <div class="card-body">
+        <div class="empty-state" style="padding:24px;">
+          <div class="empty-state-icon">⏳</div>
+          <div class="empty-state-title">Awaiting Review</div>
+          <div class="empty-state-text">Your faculty guide will review your submission and provide feedback here.</div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Attached files -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Uploaded Files</span></div>
+      <div class="card-body">
+        {% if attachments %}
+          {% for att in attachments %}
+          <div class="d-flex align-center justify-between gap-2 mb-2"
+               style="padding:12px; background:var(--color-surface-alt); border-radius:var(--radius);">
+            <div>
+              <div class="font-bold text-sm">
+                {% if att.file_type == 'REPORT_PDF' %}📄{% elif att.file_type == 'SOURCE_ZIP' %}💾{% else %}🖼️{% endif %}
+                {{ att.original_name }}
+              </div>
+              <div class="text-muted text-xs">{{ att.file_type }} · {{ human_readable_size(att.file_size_bytes) }}</div>
+            </div>
+            <a href="{{ url_for('projects.download', project_id=project.project_id, attachment_id=att.attachment_id) }}"
+               class="btn btn-secondary btn-sm">Download</a>
+          </div>
+          {% endfor %}
+        {% else %}
+        <p class="text-muted text-sm">No files attached.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar metadata -->
+  <div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <dl style="display:flex; flex-direction:column; gap:14px;">
+          <div>
+            <dt class="text-xs" style="font-weight:600; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px;">Academic Year</dt>
+            <dd>{{ project.academic_year }}–{{ project.academic_year + 1 }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs" style="font-weight:600; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px;">Department</dt>
+            <dd>{{ project.dept_name }}</dd>
+          </div>
+          <div>
+            <dt class="text-xs" style="font-weight:600; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:3px;">Faculty Guide</dt>
+            <dd>{{ project.guide_name }}</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Team</span></div>
+      <div class="card-body">
+        {% for author in authors %}
+        <div style="padding:8px 0; {% if not loop.last %}border-bottom:1px solid var(--color-border);{% endif %}">
+          <div class="font-bold text-sm">{{ author.full_name }}</div>
+          <div class="text-muted text-xs">{{ author.roll_or_emp_id or author.email }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if tags %}
+    <div class="card">
+      <div class="card-body">
+        <div class="text-xs" style="font-weight:600; color:var(--color-text-muted); text-transform:uppercase; margin-bottom:10px; letter-spacing:.05em;">Technologies</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          {% for tag in tags %}
+          <span class="badge badge-tag">{{ tag.tag_name }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

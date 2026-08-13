@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Technology Tags{% endblock %}
+{% block page_title %}Technology Tags{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <h1 class="page-header-title">Technology Tags</h1>
+    <button class="btn btn-primary" data-modal-open="add-tag-modal">➕ Add Tag</button>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr><th>Tag Name</th><th>Used In</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for tag in tags_list %}
+          <tr>
+            <td><span class="badge badge-tag" style="font-size:.85rem;">{{ tag.tag_name }}</span></td>
+            <td class="text-muted text-sm">{{ tag.usage_count }} project{{ 's' if tag.usage_count != 1 }}</td>
+            <td>
+              {% if tag.is_active %}
+              <span class="badge badge-approved">Active</span>
+              {% else %}
+              <span class="badge badge-rejected">Inactive</span>
+              {% endif %}
+            </td>
+            <td>
+              <button class="btn btn-sm {% if tag.is_active %}btn-danger{% else %}btn-success{% endif %}"
+                      data-toggle-url="{{ url_for('admin.toggle_tag', tag_id=tag.tag_id) }}"
+                      data-confirm="{% if tag.is_active %}Deactivate tag '{{ tag.tag_name }}'?{% else %}Activate tag '{{ tag.tag_name }}'?{% endif %}">
+                {% if tag.is_active %}Deactivate{% else %}Activate{% endif %}
+              </button>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center text-muted" style="padding:32px;">No tags yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add tag modal -->
+<div class="modal-overlay" id="add-tag-modal" aria-hidden="true" role="dialog">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Add Technology Tag</h2>
+      <button class="modal-close" data-modal-close="add-tag-modal" aria-label="Close">✕</button>
+    </div>
+    <form method="POST" action="{{ url_for('admin.add_tag') }}">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="tag_name">Tag Name <span class="required">*</span></label>
+          <input type="text" id="tag_name" name="tag_name" class="form-control"
+                 placeholder="e.g. Rust" maxlength="50" required autofocus>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-modal-close="add-tag-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Tag</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

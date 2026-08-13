@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Statistics{% endblock %}
+{% block page_title %}Statistics{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1 class="page-header-title">Platform Statistics</h1>
+  <p class="page-header-subtitle">Breakdown of project submissions and platform usage</p>
+</div>
+
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px;">
+
+  <!-- By Department -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Projects by Department</span></div>
+    <div class="card-body" style="padding:0;">
+      {% if by_dept %}
+      <table class="table">
+        <thead><tr><th>Department</th><th>Projects</th></tr></thead>
+        <tbody>
+          {% for row in by_dept %}
+          <tr>
+            <td>{{ row.dept_name }}</td>
+            <td>
+              <div class="d-flex align-center gap-2">
+                <div style="flex:1; background:var(--color-surface-alt); border-radius:var(--radius-full); height:6px; overflow:hidden;">
+                  <div style="width:{{ (row.cnt / (by_dept[0].cnt or 1) * 100)|int }}%; background:var(--color-primary); height:100%;"></div>
+                </div>
+                <span class="font-bold text-sm" style="min-width:24px; text-align:right;">{{ row.cnt }}</span>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state" style="padding:24px;"><div class="empty-state-text">No data yet.</div></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- By Year -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Projects by Academic Year</span></div>
+    <div class="card-body" style="padding:0;">
+      {% if by_year %}
+      <table class="table">
+        <thead><tr><th>Year</th><th>Projects</th></tr></thead>
+        <tbody>
+          {% for row in by_year %}
+          <tr>
+            <td>{{ row.academic_year }}–{{ row.academic_year + 1 }}</td>
+            <td>
+              <div class="d-flex align-center gap-2">
+                <div style="flex:1; background:var(--color-surface-alt); border-radius:var(--radius-full); height:6px; overflow:hidden;">
+                  <div style="width:{{ (row.cnt / (by_year[0].cnt or 1) * 100)|int }}%; background:var(--color-secondary); height:100%;"></div>
+                </div>
+                <span class="font-bold text-sm" style="min-width:24px; text-align:right;">{{ row.cnt }}</span>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state" style="padding:24px;"><div class="empty-state-text">No data yet.</div></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Top Tags -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Most Used Technologies</span></div>
+    <div class="card-body">
+      {% if top_tags %}
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        {% for tag in top_tags %}
+        <span class="badge badge-tag" style="font-size:.85rem; padding:6px 14px;">
+          {{ tag.tag_name }} <strong>({{ tag.cnt }})</strong>
+        </span>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-muted text-sm">No tag usage data yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Most Viewed -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Most Viewed Projects</span></div>
+    <div class="card-body" style="padding:0;">
+      {% if top_viewed %}
+      <table class="table">
+        <thead><tr><th>Project</th><th>Views</th><th>Downloads</th></tr></thead>
+        <tbody>
+          {% for proj in top_viewed %}
+          <tr>
+            <td>
+              <a href="{{ url_for('projects.detail', project_id=proj.project_id) }}"
+                 style="color:var(--color-text); font-size:.875rem;">{{ proj.title }}</a>
+            </td>
+            <td class="text-sm">{{ proj.views_count }}</td>
+            <td class="text-sm">{{ proj.downloads_count }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state" style="padding:24px;"><div class="empty-state-text">No projects yet.</div></div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

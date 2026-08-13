@@ -1,0 +1,582 @@
+{% extends "public_base.html" %}
+{% block title %}{{ project.title }} — CampusArchive{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Project Detail Page - Premium Institutional Archive */
+.detail-hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0A3D2E 100%);
+  padding: 48px 48px 40px;
+  color: #FFFFFF;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.detail-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 40%, rgba(184, 137, 47, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.detail-hero-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.breadcrumb-nav {
+  font-size: 0.875rem;
+  margin-bottom: 24px;
+  opacity: 0.88;
+}
+
+.breadcrumb-nav a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+  font-weight: 600;
+}
+
+.breadcrumb-nav a:hover {
+  opacity: 0.7;
+}
+
+.project-header-grid {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.project-title-main {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-weight: 900;
+  line-height: 1.15;
+  color: #FFFFFF;
+  margin-bottom: 18px;
+  letter-spacing: -0.02em;
+}
+
+.project-meta-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.meta-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.detail-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 56px 48px 88px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 48px;
+  align-items: start;
+}
+
+/* Archive Record Card - Premium */
+.archive-section {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
+  padding: 36px;
+  margin-bottom: 32px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.section-header-premium {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.section-icon {
+  font-size: 1.75rem;
+  opacity: 0.8;
+}
+
+.section-title-premium {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.abstract-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  text-align: justify;
+}
+
+/* Team Grid */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.team-member-card {
+  background: var(--color-surface-alt);
+  border: 1.5px solid var(--color-border);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.team-member-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+
+.member-name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  margin-bottom: 6px;
+}
+
+.member-id {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* File Download Cards */
+.file-download-card {
+  background: var(--color-surface-alt);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.file-download-card:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.file-icon {
+  font-size: 2rem;
+}
+
+.file-details {
+  flex: 1;
+}
+
+.file-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.file-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Sidebar Metadata */
+.metadata-card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.metadata-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metadata-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.metadata-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.metadata-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Tags */
+.tags-section {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-badge-premium {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.tag-badge-premium:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* Status Badge */
+.status-badge-large {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge-large.approved {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1.5px solid var(--color-success);
+}
+
+.status-badge-large.pending {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1.5px solid var(--color-warning);
+}
+
+.status-badge-large.rejected {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1.5px solid var(--color-danger);
+}
+
+/* Review Feedback */
+.review-feedback-card {
+  background: var(--color-info-bg);
+  border: 1.5px solid var(--color-info);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-hero {
+    padding: 32px 20px 24px;
+  }
+  
+  .detail-container {
+    padding: 32px 20px 60px;
+  }
+  
+  .archive-section {
+    padding: 24px;
+  }
+  
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Detail Hero -->
+<section class="detail-hero">
+  <div class="detail-hero-content">
+    <nav class="breadcrumb-nav">
+      <a href="{{ url_for('projects.browse') }}">← Browse Archive</a>
+      <span style="opacity: 0.6;"> / </span>
+      <span>{{ project.dept_name }}</span>
+      <span style="opacity: 0.6;"> / </span>
+      <span>{{ project.academic_year }}–{{ project.academic_year + 1 }}</span>
+    </nav>
+    
+    <div class="project-header-grid">
+      <div style="flex: 1;">
+        <h1 class="project-title-main">{{ project.title }}</h1>
+        <div class="project-meta-inline">
+          <div class="meta-chip">
+            <span>🏛️</span>
+            <span>{{ project.dept_name }}</span>
+          </div>
+          <div class="meta-chip">
+            <span>📅</span>
+            <span>{{ project.academic_year }}–{{ project.academic_year + 1 }}</span>
+          </div>
+          <div class="meta-chip">
+            <span>👨‍🏫</span>
+            <span>{{ project.guide_name }}</span>
+          </div>
+          <div class="meta-chip">
+            <span>👁</span>
+            <span>{{ project.views_count }} views</span>
+          </div>
+        </div>
+      </div>
+      
+      <span class="status-badge-large {{ 'approved' if project.status == 'APPROVED' else 'pending' if project.status == 'PENDING' else 'rejected' }}">
+        {{ status_display(project.status) }}
+      </span>
+    </div>
+  </div>
+</section>
+
+<div class="detail-container">
+  <div class="detail-grid">
+    
+    <!-- Main Content -->
+    <div>
+      
+      <!-- Abstract -->
+      <div class="archive-section">
+        <div class="section-header-premium">
+          <span class="section-icon">📝</span>
+          <h2 class="section-title-premium">Abstract</h2>
+        </div>
+        <p class="abstract-text">{{ project.abstract }}</p>
+      </div>
+      
+      <!-- Project Team -->
+      <div class="archive-section">
+        <div class="section-header-premium">
+          <span class="section-icon">👥</span>
+          <h2 class="section-title-premium">Project Team</h2>
+        </div>
+        {% if authors %}
+        <div class="team-grid">
+          {% for author in authors %}
+          <div class="team-member-card">
+            <div class="member-name">{{ author.full_name }}</div>
+            {% if author.roll_or_emp_id %}
+            <div class="member-id">{{ author.roll_or_emp_id }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--color-text-muted); font-size: 0.9rem;">No team information available.</p>
+        {% endif %}
+      </div>
+      
+      <!-- Faculty Feedback (if exists) -->
+      {% if latest_review %}
+      <div class="review-feedback-card">
+        <div class="review-header">
+          <span class="badge {% if latest_review.decision == 'APPROVED' %}badge-approved{% elif latest_review.decision == 'REJECTED' %}badge-rejected{% else %}badge-revision{% endif %}">
+            {{ decision_display(latest_review.decision) }}
+          </span>
+          <span style="font-size: 0.85rem; color: var(--color-text-muted);">
+            by {{ latest_review.faculty_name }}
+          </span>
+        </div>
+        {% if latest_review.comments %}
+        <p class="review-text">{{ latest_review.comments }}</p>
+        {% else %}
+        <p style="color: var(--color-text-muted); font-size: 0.9rem;">No written feedback provided.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      <!-- Project Files -->
+      {% if project.status == 'APPROVED' %}
+      <div class="archive-section">
+        <div class="section-header-premium">
+          <span class="section-icon">📦</span>
+          <h2 class="section-title-premium">Project Files</h2>
+        </div>
+        
+        {% set has_files = namespace(v=false) %}
+        
+        <!-- Report & Diagrams -->
+        {% for att in attachments %}
+          {% if att.file_type in ('REPORT_PDF', 'DIAGRAM') %}
+          {% set has_files.v = true %}
+          <div class="file-download-card">
+            <div class="file-info">
+              <span class="file-icon">{% if att.file_type == 'REPORT_PDF' %}📄{% else %}🖼️{% endif %}</span>
+              <div class="file-details">
+                <div class="file-name">{{ att.original_name }}</div>
+                <div class="file-meta">{{ human_readable_size(att.file_size_bytes) }}</div>
+              </div>
+            </div>
+            <a href="{{ url_for('projects.download', project_id=project.project_id, attachment_id=att.attachment_id) }}"
+               class="btn btn-primary">Download</a>
+          </div>
+          {% endif %}
+        {% endfor %}
+        
+        <!-- Source Code -->
+        {% for att in attachments %}
+          {% if att.file_type == 'SOURCE_ZIP' %}
+          {% set has_files.v = true %}
+          <div class="file-download-card">
+            <div class="file-info">
+              <span class="file-icon">💾</span>
+              <div class="file-details">
+                <div class="file-name">{{ att.original_name }}</div>
+                <div class="file-meta">{{ human_readable_size(att.file_size_bytes) }} • Source Code</div>
+              </div>
+            </div>
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('projects.download', project_id=project.project_id, attachment_id=att.attachment_id) }}"
+               class="btn btn-primary">Download</a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Login to Download</a>
+            {% endif %}
+          </div>
+          {% endif %}
+        {% endfor %}
+        
+        {% if not has_files.v %}
+        <p style="color: var(--color-text-muted); font-size: 0.9rem;">No files available for download.</p>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+    </div>
+    
+    <!-- Sidebar Metadata -->
+    <div>
+      
+      <!-- Archive Metadata -->
+      <div class="metadata-card">
+        <div style="font-family: 'Merriweather', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; color: var(--color-text);">
+          Archive Record
+        </div>
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <div class="metadata-label">Academic Year</div>
+            <div class="metadata-value">{{ project.academic_year }}–{{ project.academic_year + 1 }}</div>
+          </div>
+          
+          <div class="metadata-item">
+            <div class="metadata-label">Department</div>
+            <div class="metadata-value">{{ project.dept_name }}</div>
+          </div>
+          
+          <div class="metadata-item">
+            <div class="metadata-label">Faculty Guide</div>
+            <div class="metadata-value">{{ project.guide_name }}</div>
+          </div>
+          
+          <div class="metadata-item">
+            <div class="metadata-label">Lead Student</div>
+            <div class="metadata-value">{{ project.lead_name }}</div>
+          </div>
+          
+          {% if project.submitted_at %}
+          <div class="metadata-item">
+            <div class="metadata-label">Archived On</div>
+            <div class="metadata-value">{{ project.submitted_at.strftime('%d %B %Y') if project.submitted_at else '—' }}</div>
+          </div>
+          {% endif %}
+          
+          <div class="metadata-item">
+            <div class="metadata-label">Total Views</div>
+            <div class="metadata-value">{{ project.views_count }}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Technologies -->
+      {% if tags %}
+      <div class="tags-section">
+        <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: 14px;">
+          Technologies Used
+        </div>
+        <div class="tags-grid">
+          {% for tag in tags %}
+          <a href="{{ url_for('projects.browse', tag=tag.tag_id if tag.tag_id is defined else '') }}"
+             class="tag-badge-premium">{{ tag.tag_name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      
+    </div>
+    
+  </div>
+</div>
+
+{% endblock %}

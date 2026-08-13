@@ -1,0 +1,737 @@
+{% extends "public_base.html" %}
+{% block title %}Browse Projects{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Browse Page Specific Styles - Reference Aesthetic */
+.browse-hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0A3D2E 100%);
+  padding: 72px 48px 48px;
+  color: #FFFFFF;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.browse-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(184, 137, 47, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(7, 59, 43, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.browse-hero-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.browse-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.25rem, 4.5vw, 3rem);
+  font-weight: 900;
+  margin-bottom: 14px;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.browse-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.88;
+  margin-bottom: 32px;
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.browse-search-bar {
+  background: #FFFFFF;
+  border-radius: 12px;
+  padding: 6px 6px 6px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 640px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+}
+
+.browse-search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  padding: 12px 8px;
+  color: var(--color-text);
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.browse-search-bar input::placeholder {
+  color: var(--color-text-light);
+}
+
+.browse-search-bar .btn {
+  background: var(--color-primary);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.browse-search-bar .btn:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+}
+
+.browse-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 48px 48px 88px;
+}
+
+.browse-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Filter Panel - Premium Aesthetic */
+.filter-sidebar {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
+  padding: 28px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.filter-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+}
+
+.filter-section:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label-premium {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 10px;
+}
+
+.filter-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1.5px solid var(--color-border);
+}
+
+/* Results Header */
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.results-count {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+}
+
+.results-count strong {
+  color: var(--color-text);
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+}
+
+.results-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.results-sort select {
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.results-sort select:hover {
+  border-color: var(--color-primary);
+}
+
+.results-sort select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(7, 59, 43, 0.1);
+}
+
+/* Project Grid - Premium Reference Style */
+.projects-grid-premium {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 28px;
+}
+
+.project-card-premium {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  position: relative;
+}
+
+.project-card-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-primary) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card-premium:hover::before {
+  opacity: 1;
+}
+
+.project-card-premium:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 12px 32px rgba(0,0,0,.08);
+  transform: translateY(-4px);
+}
+
+.project-header-section {
+  padding: 28px 28px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.project-dept-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  margin-bottom: 14px;
+}
+
+.project-card-premium .card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 14px;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-abstract-snippet {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  line-height: 1.65;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-body-section {
+  padding: 20px 28px;
+}
+
+.project-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.meta-item-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meta-item-inline span:first-child {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.project-footer-section {
+  padding: 18px 28px;
+  background: var(--color-surface-alt);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.project-tags-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  background: rgba(7, 59, 43, 0.06);
+  border: 1px solid rgba(7, 59, 43, 0.12);
+  color: var(--color-primary);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.tag-pill:hover {
+  background: rgba(7, 59, 43, 0.1);
+  border-color: rgba(7, 59, 43, 0.2);
+}
+
+.project-views {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+/* Pagination - Premium Reference Style */
+.pagination-premium {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 56px;
+}
+
+.page-btn-premium {
+  min-width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.page-btn-premium:hover {
+  border-color: var(--color-accent);
+  color: var(--color-primary);
+  background: rgba(184, 137, 47, 0.06);
+  transform: translateY(-2px);
+}
+
+.page-btn-premium.active {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0A3D2E 100%);
+  border-color: var(--color-primary);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(7, 59, 43, 0.2);
+}
+
+.page-btn-premium:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .browse-container {
+    padding: 40px 32px 72px;
+  }
+  
+  .browse-grid {
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+  }
+  
+  .projects-grid-premium {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .browse-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-sidebar {
+    position: static;
+    margin-bottom: 32px;
+  }
+  
+  .projects-grid-premium {
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .browse-hero {
+    padding: 48px 24px 36px;
+  }
+  
+  .browse-title {
+    font-size: 2rem;
+  }
+  
+  .browse-container {
+    padding: 32px 24px 64px;
+  }
+  
+  .projects-grid-premium {
+    grid-template-columns: 1fr;
+  }
+  
+  .project-meta-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .filter-sidebar {
+    padding: 24px;
+  }
+  
+  .pagination-premium {
+    margin-top: 40px;
+    gap: 6px;
+  }
+  
+  .page-btn-premium {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .browse-hero {
+    padding: 40px 20px 32px;
+  }
+  
+  .browse-container {
+    padding: 28px 20px 56px;
+  }
+  
+  .browse-search-bar {
+    flex-direction: column;
+    padding: 12px;
+  }
+  
+  .browse-search-bar input {
+    width: 100%;
+  }
+  
+  .browse-search-bar .btn {
+    width: 100%;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Browse Hero -->
+<section class="browse-hero">
+  <div class="browse-hero-content">
+    <h1 class="browse-title">Project Archive</h1>
+    <p class="browse-subtitle">
+      {% if total > 0 %}
+        {{ total }} approved project{{ 's' if total != 1 }} 
+        {% if search %}matching "<strong>{{ search }}</strong>"{% endif %}
+      {% else %}
+        Browse approved student projects from our institutional archive
+      {% endif %}
+    </p>
+    
+    <!-- Quick Search -->
+    <form action="{{ url_for('projects.browse') }}" method="get" class="browse-search-bar">
+      <span style="color: var(--color-text-muted); font-size: 1rem;">🔍</span>
+      <input type="text" 
+             name="q" 
+             placeholder="Search by title, keyword, or technology..." 
+             value="{{ search or '' }}">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+  </div>
+</section>
+
+<div class="browse-container">
+  <div class="browse-grid">
+    
+    <!-- Filter Sidebar -->
+    <aside class="filter-sidebar">
+      <div class="filter-header">
+        <h2 class="filter-title">Filters</h2>
+        {% if search or selected_dept or selected_year or selected_guide or selected_tag %}
+        <a href="{{ url_for('projects.browse') }}" 
+           style="font-size: 0.75rem; color: var(--color-primary); text-decoration: none;">
+          Clear all
+        </a>
+        {% endif %}
+      </div>
+      
+      <form method="GET" action="{{ url_for('projects.browse') }}" id="filter-form">
+        <!-- Search input (hidden - controlled by hero bar) -->
+        {% if search %}
+        <input type="hidden" name="q" value="{{ search }}">
+        {% endif %}
+        
+        <div class="filter-section">
+          <label class="filter-label-premium" for="dept">Department</label>
+          <select id="dept" name="dept" class="form-control form-select">
+            <option value="">All departments</option>
+            {% for dept in departments %}
+            <option value="{{ dept.department_id }}"
+              {% if selected_dept|string == dept.department_id|string %}selected{% endif %}>
+              {{ dept.dept_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <label class="filter-label-premium" for="year">Academic Year</label>
+          <select id="year" name="year" class="form-control form-select">
+            <option value="">All years</option>
+            {% for y in years %}
+            <option value="{{ y.academic_year }}"
+              {% if selected_year|string == y.academic_year|string %}selected{% endif %}>
+              {{ y.academic_year }}–{{ y.academic_year + 1 }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <label class="filter-label-premium" for="guide">Faculty Guide</label>
+          <select id="guide" name="guide" class="form-control form-select">
+            <option value="">All faculty</option>
+            {% for f in faculty_list %}
+            <option value="{{ f.user_id }}"
+              {% if selected_guide|string == f.user_id|string %}selected{% endif %}>
+              {{ f.full_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-section">
+          <label class="filter-label-premium" for="tag">Technology</label>
+          <select id="tag" name="tag" class="form-control form-select">
+            <option value="">All technologies</option>
+            {% for t in tags_list %}
+            <option value="{{ t.tag_id }}"
+              {% if selected_tag|string == t.tag_id|string %}selected{% endif %}>
+              {{ t.tag_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+        </div>
+      </form>
+    </aside>
+
+    <!-- Results -->
+    <div>
+      {% if projects %}
+      
+      <div class="results-header">
+        <div class="results-count">
+          Showing <strong>{{ projects|length }}</strong> of <strong>{{ total }}</strong> projects
+        </div>
+      </div>
+      
+      <div class="projects-grid-premium">
+        {% for proj in projects %}
+        <a href="{{ url_for('projects.detail', project_id=proj.project_id) }}" class="project-card-premium">
+          <div class="project-header-section">
+            <div class="project-dept-badge">
+              <span>🏛️</span>
+              <span>{{ proj.dept_name }}</span>
+            </div>
+            <h3 class="card-title">{{ proj.title }}</h3>
+            <p class="project-abstract-snippet">{{ proj.abstract }}</p>
+          </div>
+          
+          <div class="project-body-section">
+            <div class="project-meta-grid">
+              <div class="meta-item-inline">
+                <span>📅</span>
+                <span>{{ proj.academic_year }}–{{ proj.academic_year + 1 }}</span>
+              </div>
+              <div class="meta-item-inline">
+                <span>👨‍🏫</span>
+                <span>{{ proj.guide_name }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="project-footer-section">
+            {% if proj.tags %}
+            <div class="project-tags-inline">
+              {% for tag in proj.tags[:3] %}
+              <span class="tag-pill">{{ tag.tag_name }}</span>
+              {% endfor %}
+              {% if proj.tags|length > 3 %}
+              <span class="tag-pill">+{{ proj.tags|length - 3 }}</span>
+              {% endif %}
+            </div>
+            {% endif %}
+            <div class="project-views">
+              <span>👁</span>
+              <span>{{ proj.views_count }}</span>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      {% if pages > 1 %}
+      <div class="pagination-premium">
+        {% if page > 1 %}
+        <a href="{{ url_for('projects.browse', page=page-1, q=search, dept=selected_dept, year=selected_year, guide=selected_guide, tag=selected_tag) }}"
+           class="page-btn-premium">← Prev</a>
+        {% else %}
+        <button class="page-btn-premium" disabled>← Prev</button>
+        {% endif %}
+        
+        {% for p in range(1, pages+1) %}
+          {% if p == page %}
+          <span class="page-btn-premium active">{{ p }}</span>
+          {% elif p == 1 or p == pages or (p >= page-2 and p <= page+2) %}
+          <a href="{{ url_for('projects.browse', page=p, q=search, dept=selected_dept, year=selected_year, guide=selected_guide, tag=selected_tag) }}"
+             class="page-btn-premium">{{ p }}</a>
+          {% elif p == page-3 or p == page+3 %}
+          <span class="page-btn-premium" style="border: none; cursor: default;">…</span>
+          {% endif %}
+        {% endfor %}
+        
+        {% if page < pages %}
+        <a href="{{ url_for('projects.browse', page=page+1, q=search, dept=selected_dept, year=selected_year, guide=selected_guide, tag=selected_tag) }}"
+           class="page-btn-premium">Next →</a>
+        {% else %}
+        <button class="page-btn-premium" disabled>Next →</button>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% else %}
+      <!-- Empty State -->
+      <div class="empty-state" style="padding: 80px 40px;">
+        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-title">
+          {% if search or selected_dept or selected_year or selected_guide or selected_tag %}
+            No projects match your filters
+          {% else %}
+            No approved projects archived yet
+          {% endif %}
+        </div>
+        <div class="empty-state-text">
+          {% if search or selected_dept or selected_year or selected_guide or selected_tag %}
+            Try adjusting your search terms or removing some filters to see more results.
+          {% else %}
+            Be the first team to contribute to the institutional archive.
+          {% endif %}
+        </div>
+        {% if search or selected_dept or selected_year or selected_guide or selected_tag %}
+        <a href="{{ url_for('projects.browse') }}" class="btn btn-primary mt-3">Clear all filters</a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Auto-submit filters on select change
+  document.querySelectorAll('#filter-form select').forEach(sel => {
+    sel.addEventListener('change', () => document.getElementById('filter-form').submit());
+  });
+</script>
+{% endblock %}

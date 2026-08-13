@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CampusArchive{% endblock %} — CampusArchive</title>
+  <meta name="description" content="CampusArchive — Institutional Student Project Repository">
+
+  <!-- Prevent theme flash -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('ca-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay"></div>
+
+<div class="app-wrapper">
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <a href="{{ url_for('main.home') }}" class="sidebar-logo">
+        <div class="logo-icon" aria-hidden="true"></div>
+        <span>CampusArchive</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      {% set role = session.get('role', '') %}
+
+      <!-- Common -->
+      <span class="nav-section-label">Navigate</span>
+      <a href="{{ url_for('main.home') }}"
+         class="nav-item {% if request.endpoint == 'main.home' %}active{% endif %}">
+        <span class="nav-icon">🏠</span> Home
+      </a>
+      <a href="{{ url_for('projects.browse') }}"
+         class="nav-item {% if request.endpoint == 'projects.browse' %}active{% endif %}">
+        <span class="nav-icon">🔍</span> Browse Projects
+      </a>
+
+      {% if role == 'STUDENT' %}
+      <span class="nav-section-label">Student</span>
+      <a href="{{ url_for('student.dashboard') }}"
+         class="nav-item {% if request.endpoint == 'student.dashboard' %}active{% endif %}">
+        <span class="nav-icon">📊</span> My Dashboard
+      </a>
+      <a href="{{ url_for('student.create_project') }}"
+         class="nav-item {% if request.endpoint == 'student.create_project' %}active{% endif %}">
+        <span class="nav-icon">➕</span> Submit Project
+      </a>
+      <a href="{{ url_for('student.my_projects') }}"
+         class="nav-item {% if request.endpoint == 'student.my_projects' %}active{% endif %}">
+        <span class="nav-icon">📋</span> My Submissions
+      </a>
+
+      {% elif role == 'FACULTY' %}
+      <span class="nav-section-label">Faculty</span>
+      <a href="{{ url_for('faculty.dashboard') }}"
+         class="nav-item {% if request.endpoint == 'faculty.dashboard' %}active{% endif %}">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="{{ url_for('faculty.reviews') }}"
+         class="nav-item {% if request.endpoint == 'faculty.reviews' %}active{% endif %}">
+        <span class="nav-icon">📝</span> Review Queue
+      </a>
+
+      {% elif role == 'ADMIN' %}
+      <span class="nav-section-label">Admin</span>
+      <a href="{{ url_for('admin.dashboard') }}"
+         class="nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="{{ url_for('admin.users') }}"
+         class="nav-item {% if request.endpoint == 'admin.users' %}active{% endif %}">
+        <span class="nav-icon">👥</span> Users
+      </a>
+      <a href="{{ url_for('admin.departments') }}"
+         class="nav-item {% if request.endpoint == 'admin.departments' %}active{% endif %}">
+        <span class="nav-icon">🏛️</span> Departments
+      </a>
+      <a href="{{ url_for('admin.tags') }}"
+         class="nav-item {% if request.endpoint == 'admin.tags' %}active{% endif %}">
+        <span class="nav-icon">🏷️</span> Tags
+      </a>
+      <a href="{{ url_for('admin.statistics') }}"
+         class="nav-item {% if request.endpoint == 'admin.statistics' %}active{% endif %}">
+        <span class="nav-icon">📈</span> Statistics
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="d-flex align-center justify-between gap-2">
+        <div>
+          <div class="text-sm font-bold" style="color:#fff">{{ session.get('full_name', '') }}</div>
+          <div class="text-xs text-muted">{{ role }}</div>
+        </div>
+        <a href="{{ url_for('auth.logout') }}"
+           class="btn btn-ghost btn-sm"
+           style="color: var(--sidebar-text);"
+           title="Logout">
+          🚪
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main area ─────────────────────────────────────────── -->
+  <div class="main-content">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" aria-label="Toggle sidebar">
+          ☰
+        </button>
+        <span class="topbar-title">{% block page_title %}{% endblock %}</span>
+      </div>
+      <div class="topbar-right">
+        <button class="theme-toggle" aria-label="Toggle theme">
+          <span class="theme-icon-moon">🌙</span>
+          <span class="theme-icon-sun hidden">☀️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="flash-messages mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" data-auto-dismiss role="alert">
+          <span>{{ message }}</span>
+          <button class="alert-close" aria-label="Dismiss">✕</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="page-content" id="main-content">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" role="status" aria-live="polite"></div>
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

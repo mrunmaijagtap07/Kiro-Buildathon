@@ -1,0 +1,56 @@
+# Environment & secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.Python
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Uploaded files (never commit user uploads)
+uploads/reports/*
+uploads/source/*
+uploads/diagrams/*
+!uploads/reports/.gitkeep
+!uploads/source/.gitkeep
+!uploads/diagrams/.gitkeep
+
+# Database dumps with sensitive data
+*.sql.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Kiro local workspace
+.kiro/
+.kiro-workspace/

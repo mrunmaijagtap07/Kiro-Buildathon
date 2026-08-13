@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1 class="page-header-title">System Overview</h1>
+  <p class="page-header-subtitle">Platform statistics and recent activity</p>
+</div>
+
+<!-- User stats -->
+<h2 class="text-sm font-bold" style="text-transform:uppercase; letter-spacing:.08em; color:var(--color-text-muted); margin-bottom:12px;">Users</h2>
+<div class="stat-grid mb-4">
+  <div class="stat-card">
+    <div class="stat-icon blue">👥</div>
+    <div class="stat-value">{{ user_stats.total_users or 0 }}</div>
+    <div class="stat-label">Total Users</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">🎓</div>
+    <div class="stat-value">{{ user_stats.students or 0 }}</div>
+    <div class="stat-label">Students</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple">👨‍🏫</div>
+    <div class="stat-value">{{ user_stats.faculty or 0 }}</div>
+    <div class="stat-label">Faculty</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon yellow">🔑</div>
+    <div class="stat-value">{{ user_stats.admins or 0 }}</div>
+    <div class="stat-label">Admins</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">🚫</div>
+    <div class="stat-value">{{ user_stats.inactive or 0 }}</div>
+    <div class="stat-label">Inactive Accounts</div>
+  </div>
+</div>
+
+<!-- Project stats -->
+<h2 class="text-sm font-bold" style="text-transform:uppercase; letter-spacing:.08em; color:var(--color-text-muted); margin-bottom:12px;">Projects</h2>
+<div class="stat-grid mb-4">
+  <div class="stat-card">
+    <div class="stat-icon blue">📋</div>
+    <div class="stat-value">{{ project_stats.total or 0 }}</div>
+    <div class="stat-label">Total Projects</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">✅</div>
+    <div class="stat-value">{{ project_stats.approved or 0 }}</div>
+    <div class="stat-label">Approved</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon yellow">⏳</div>
+    <div class="stat-value">{{ project_stats.pending or 0 }}</div>
+    <div class="stat-label">Pending Review</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">📝</div>
+    <div class="stat-value">{{ project_stats.needs_revision or 0 }}</div>
+    <div class="stat-label">Needs Revision</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">✗</div>
+    <div class="stat-value">{{ project_stats.rejected or 0 }}</div>
+    <div class="stat-label">Rejected</div>
+  </div>
+</div>
+
+<!-- Other stats -->
+<div class="stat-grid mb-4">
+  <div class="stat-card">
+    <div class="stat-icon purple">🏛️</div>
+    <div class="stat-value">{{ dept_count.cnt or 0 }}</div>
+    <div class="stat-label">Active Departments</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">🏷️</div>
+    <div class="stat-value">{{ tag_count.cnt or 0 }}</div>
+    <div class="stat-label">Technology Tags</div>
+  </div>
+</div>
+
+<!-- Quick links -->
+<div class="d-flex gap-3 mb-4 flex-wrap">
+  <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">👥 Manage Users</a>
+  <a href="{{ url_for('admin.departments') }}" class="btn btn-secondary">🏛️ Manage Departments</a>
+  <a href="{{ url_for('admin.tags') }}" class="btn btn-secondary">🏷️ Manage Tags</a>
+  <a href="{{ url_for('admin.statistics') }}" class="btn btn-secondary">📈 Detailed Statistics</a>
+</div>
+
+<!-- Recent project activity -->
+<div class="card">
+  <div class="card-header d-flex justify-between align-center">
+    <span class="card-title">Recent Project Activity</span>
+  </div>
+  <div class="card-body" style="padding:0;">
+    {% if recent_projects %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr><th>Project</th><th>Lead</th><th>Department</th><th>Status</th><th>Submitted</th></tr>
+        </thead>
+        <tbody>
+          {% for proj in recent_projects %}
+          <tr>
+            <td>
+              <a href="{{ url_for('projects.detail', project_id=proj.project_id) }}"
+                 style="color:var(--color-text); font-weight:600;">{{ proj.title }}</a>
+            </td>
+            <td class="text-muted text-sm">{{ proj.lead_name }}</td>
+            <td class="text-muted text-sm">{{ proj.dept_name }}</td>
+            <td><span class="badge {{ status_badge_class(proj.status) }}">{{ status_display(proj.status) }}</span></td>
+            <td class="text-muted text-sm">
+              {{ proj.submitted_at.strftime('%d %b %Y') if proj.submitted_at else '—' }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:32px;">
+      <div class="empty-state-icon">📂</div>
+      <div class="empty-state-title">No projects yet</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

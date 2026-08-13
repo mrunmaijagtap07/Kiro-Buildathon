@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Review Queue{% endblock %}
+{% block page_title %}Review Queue{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-header-title">Review Queue</h1>
+      <p class="page-header-subtitle">All projects assigned to you</p>
+    </div>
+  </div>
+</div>
+
+<!-- Status filter -->
+<div class="d-flex gap-2 mb-4 flex-wrap">
+  <a href="{{ url_for('faculty.reviews') }}"
+     class="btn {% if not status_filter %}btn-primary{% else %}btn-secondary{% endif %} btn-sm">
+    All
+  </a>
+  {% for s, label in [('PENDING','Pending'), ('NEEDS_REVISION','Needs Revision'), ('APPROVED','Approved'), ('REJECTED','Rejected')] %}
+  <a href="{{ url_for('faculty.reviews', status=s) }}"
+     class="btn {% if status_filter == s %}btn-primary{% else %}btn-secondary{% endif %} btn-sm">
+    {{ label }}
+  </a>
+  {% endfor %}
+</div>
+
+{% if projects %}
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Project Title</th>
+            <th>Lead Student</th>
+            <th>Department</th>
+            <th>Year</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for proj in projects %}
+          <tr>
+            <td>
+              <a href="{{ url_for('faculty.review', project_id=proj.project_id) }}"
+                 class="font-bold" style="color:var(--color-text);">{{ proj.title }}</a>
+            </td>
+            <td class="text-muted text-sm">{{ proj.lead_name }}</td>
+            <td class="text-muted text-sm">{{ proj.dept_name }}</td>
+            <td class="text-muted text-sm">{{ proj.academic_year }}</td>
+            <td>
+              <span class="badge {{ status_badge_class(proj.status) }}">
+                {{ status_display(proj.status) }}
+              </span>
+            </td>
+            <td class="text-muted text-sm">
+              {{ proj.submitted_at.strftime('%d %b %Y') if proj.submitted_at else '—' }}
+            </td>
+            <td>
+              <a href="{{ url_for('faculty.review', project_id=proj.project_id) }}"
+                 class="btn btn-{% if proj.status == 'PENDING' %}primary{% else %}secondary{% endif %} btn-sm">
+                {% if proj.status == 'PENDING' %}Review →{% else %}View{% endif %}
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="card">
+  <div class="card-body">
+    <div class="empty-state">
+      <div class="empty-state-icon">📋</div>
+      <div class="empty-state-title">No projects found</div>
+      <div class="empty-state-text">
+        {% if status_filter %}
+          No {{ status_display(status_filter) | lower }} projects assigned to you.
+        {% else %}
+          No projects have been assigned to you yet.
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

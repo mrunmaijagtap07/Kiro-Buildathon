@@ -1,0 +1,40 @@
+{% extends "auth_base.html" %}
+{% block title %}Complete Your Profile{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <div class="auth-title">Complete Your Profile</div>
+  <div class="auth-subtitle mb-4">
+    Welcome! Please provide a few more details to finish setting up your account.
+  </div>
+
+  <form method="POST" action="{{ url_for('auth.complete_profile') }}">
+    <div class="form-group">
+      <label class="form-label" for="role">I am a… <span class="required">*</span></label>
+      <select id="role" name="role" class="form-control form-select" required>
+        <option value="">Select your role…</option>
+        <option value="STUDENT">Student</option>
+        <option value="FACULTY">Faculty Member</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="department_id">Department <span class="required">*</span></label>
+      <select id="department_id" name="department_id" class="form-control form-select" required>
+        <option value="">Select department…</option>
+        {% for dept in departments %}
+        <option value="{{ dept.department_id }}">{{ dept.dept_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="roll_or_emp_id">Roll / Employee ID</label>
+      <input type="text" id="roll_or_emp_id" name="roll_or_emp_id" class="form-control"
+             placeholder="e.g. 22IT001 (optional)">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-2">Save &amp; Continue</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block title %}Submit Project{% endblock %}
+{% block page_title %}Submit New Project{% endblock %}
+
+{% block content %}
+
+<div class="container-md">
+  <div class="page-header">
+    <h1 class="page-header-title">Submit a New Project</h1>
+    <p class="page-header-subtitle">Fill in all required fields. Your submission will be reviewed by your faculty guide.</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('student.create_project') }}"
+        enctype="multipart/form-data" novalidate id="submit-form">
+
+    <!-- Project Information -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Project Information</span></div>
+      <div class="card-body">
+
+        <div class="form-group">
+          <label class="form-label" for="title">Project Title <span class="required">*</span></label>
+          <input type="text" id="title" name="title" class="form-control"
+                 value="{{ form.get('title', '') }}"
+                 placeholder="Enter a clear, descriptive project title"
+                 maxlength="255" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="abstract">Abstract <span class="required">*</span></label>
+          <textarea id="abstract" name="abstract" class="form-control"
+                    placeholder="Describe your project — its purpose, methodology, key features, and outcomes (minimum 50 characters)"
+                    rows="6" required minlength="50" maxlength="5000">{{ form.get('abstract', '') }}</textarea>
+          <div class="form-hint">
+            <span id="abstract-count">0</span> / 5000 characters
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="academic_year">Academic Year <span class="required">*</span></label>
+            <select id="academic_year" name="academic_year" class="form-control form-select" required>
+              <option value="">Select year…</option>
+              {% for y in years %}
+              <option value="{{ y }}"
+                {% if form.get('academic_year')|string == y|string %}selected{% endif %}>
+                {{ y }}–{{ y + 1 }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="department_id">Department <span class="required">*</span></label>
+            <select id="department_id" name="department_id" class="form-control form-select" required>
+              <option value="">Select department…</option>
+              {% for dept in departments %}
+              <option value="{{ dept.department_id }}"
+                {% if form.get('department_id')|string == dept.department_id|string %}selected{% endif %}>
+                {{ dept.dept_name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="guide_id">Faculty Guide <span class="required">*</span></label>
+          <select id="guide_id" name="guide_id" class="form-control form-select" required>
+            <option value="">Select your guide…</option>
+            {% for faculty in faculty_list %}
+            <option value="{{ faculty.user_id }}"
+              {% if form.get('guide_id')|string == faculty.user_id|string %}selected{% endif %}>
+              {{ faculty.full_name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Team Members -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Team Members</span></div>
+      <div class="card-body">
+        <p class="text-muted text-sm mb-3">
+          You are automatically added as the lead student. Add co-authors by their registered email addresses.
+        </p>
+
+        <div id="team-member-list">
+          <div class="team-member-row d-flex gap-2 mb-2">
+            <input type="email" name="team_members" class="form-control"
+                   placeholder="Co-author email address (e.g. teammate@college.edu)">
+            <button type="button" class="btn btn-ghost btn-icon remove-member" title="Remove" aria-label="Remove member">✕</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-member">
+          ➕ Add Another Team Member
+        </button>
+        <div class="form-hint mt-2">Enter each team member's registered email. They must already have an account.</div>
+      </div>
+    </div>
+
+    <!-- Technology Tags -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Technology Tags</span></div>
+      <div class="card-body">
+        <p class="text-muted text-sm mb-3">Select the technologies used in your project.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          {% for tag in tags_list %}
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;
+                        padding:6px 12px; background:var(--color-surface-alt);
+                        border:1.5px solid var(--color-border); border-radius:var(--radius-full);
+                        font-size:.85rem; transition:var(--transition);"
+                 class="tag-checkbox-label">
+            <input type="checkbox" name="tags" value="{{ tag.tag_id }}"
+                   style="display:none;" class="tag-checkbox">
+            <span>{{ tag.tag_name }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- File Uploads -->
+    <div class="card mb-4">
+      <div class="card-header"><span class="card-title">Project Files</span></div>
+      <div class="card-body">
+
+        <div class="form-row mb-3">
+          <div class="form-group">
+            <label class="form-label">
+              Project Report (PDF) <span class="required">*</span>
+            </label>
+            <div class="file-upload">
+              <input type="file" name="report_pdf" id="report_pdf" accept=".pdf">
+              <div class="file-upload-icon">📄</div>
+              <div class="file-upload-text">Click or drag to upload PDF</div>
+              <div class="file-upload-name" id="report-name">No file selected</div>
+            </div>
+            <div class="form-hint">Accepted: .pdf · Max 20 MB</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              Source Code (ZIP) <span class="required">*</span>
+            </label>
+            <div class="file-upload">
+              <input type="file" name="source_zip" id="source_zip" accept=".zip">
+              <div class="file-upload-icon">💾</div>
+              <div class="file-upload-text">Click or drag to upload ZIP</div>
+              <div class="file-upload-name" id="source-name">No file selected</div>
+            </div>
+            <div class="form-hint">Accepted: .zip · Max 50 MB</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">System Diagram / Architecture (Optional)</label>
+          <div class="file-upload" style="max-width: 400px;">
+            <input type="file" name="diagram" id="diagram"
+                   accept=".pdf,.png,.jpg,.jpeg,.gif,.svg">
+            <div class="file-upload-icon">🖼️</div>
+            <div class="file-upload-text">Click or drag to upload diagram</div>
+            <div class="file-upload-name" id="diagram-name">No file selected</div>
+          </div>
+          <div class="form-hint">Accepted: pdf, png, jpg, jpeg, gif, svg · Max 10 MB</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="d-flex gap-2 justify-between">
+      <a href="{{ url_for('student.dashboard') }}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
+        📤 Submit Project
+      </button>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Abstract character counter
+  const abstractEl = document.getElementById('abstract');
+  const countEl    = document.getElementById('abstract-count');
+  if (abstractEl && countEl) {
+    function updateCount() { countEl.textContent = abstractEl.value.length; }
+    abstractEl.addEventListener('input', updateCount);
+    updateCount();
+  }
+
+  // Tag checkbox styling
+  document.querySelectorAll('.tag-checkbox').forEach(cb => {
+    function update() {
+      const label = cb.closest('.tag-checkbox-label');
+      if (cb.checked) {
+        label.style.borderColor = 'var(--color-primary)';
+        label.style.background  = 'var(--color-primary-light)';
+        label.style.color       = 'var(--color-primary)';
+      } else {
+        label.style.borderColor = 'var(--color-border)';
+        label.style.background  = 'var(--color-surface-alt)';
+        label.style.color       = '';
+      }
+    }
+    cb.addEventListener('change', update);
+    update();
+  });
+
+  // File input labels
+  function wireFileInput(inputId, labelId) {
+    const input = document.getElementById(inputId);
+    const label = document.getElementById(labelId);
+    if (input && label) {
+      input.addEventListener('change', () => {
+        label.textContent = input.files[0]?.name || 'No file selected';
+      });
+    }
+  }
+  wireFileInput('report_pdf', 'report-name');
+  wireFileInput('source_zip', 'source-name');
+  wireFileInput('diagram',    'diagram-name');
+
+  // Add team member rows
+  document.getElementById('add-member').addEventListener('click', () => {
+    const list = document.getElementById('team-member-list');
+    const row  = document.createElement('div');
+    row.className = 'team-member-row d-flex gap-2 mb-2';
+    row.innerHTML = `
+      <input type="email" name="team_members" class="form-control"
+             placeholder="Co-author email address">
+      <button type="button" class="btn btn-ghost btn-icon remove-member" title="Remove" aria-label="Remove">✕</button>
+    `;
+    list.appendChild(row);
+  });
+
+  document.getElementById('team-member-list').addEventListener('click', e => {
+    if (e.target.classList.contains('remove-member')) {
+      e.target.closest('.team-member-row')?.remove();
+    }
+  });
+
+  // Loading state on submit
+  document.getElementById('submit-form').addEventListener('submit', () => {
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Uploading…';
+    btn.disabled    = true;
+  });
+</script>
+{% endblock %}

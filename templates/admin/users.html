@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}User Management{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-header-title">Users</h1>
+      <p class="page-header-subtitle">{{ users_list|length }} user{{ 's' if users_list|length != 1 }} found</p>
+    </div>
+  </div>
+</div>
+
+<!-- Filters -->
+<form method="GET" action="{{ url_for('admin.users') }}" class="d-flex gap-2 mb-4 flex-wrap align-center">
+  <input type="text" name="q" class="form-control" value="{{ search }}"
+         placeholder="Search name, email, or ID…" style="max-width:260px;">
+  <select name="role" class="form-control form-select" style="max-width:160px;">
+    <option value="">All roles</option>
+    <option value="STUDENT"  {% if role_filter == 'STUDENT'  %}selected{% endif %}>Students</option>
+    <option value="FACULTY"  {% if role_filter == 'FACULTY'  %}selected{% endif %}>Faculty</option>
+    <option value="ADMIN"    {% if role_filter == 'ADMIN'    %}selected{% endif %}>Admins</option>
+  </select>
+  <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+  {% if search or role_filter %}
+  <a href="{{ url_for('admin.users') }}" class="btn btn-secondary btn-sm">Clear</a>
+  {% endif %}
+</form>
+
+<div class="card">
+  <div class="card-body" style="padding:0;">
+    {% if users_list %}
+    <div class="table-wrapper">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Roll/Emp ID</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users_list %}
+          <tr>
+            <td class="font-bold">{{ user.full_name }}</td>
+            <td class="text-muted text-sm">{{ user.email }}</td>
+            <td>
+              <span class="badge badge-neutral">{{ user.role }}</span>
+            </td>
+            <td class="text-muted text-sm">{{ user.dept_name or '—' }}</td>
+            <td class="text-muted text-sm">{{ user.roll_or_emp_id or '—' }}</td>
+            <td>
+              {% if user.is_active %}
+              <span class="badge badge-approved">Active</span>
+              {% else %}
+              <span class="badge badge-rejected">Inactive</span>
+              {% endif %}
+            </td>
+            <td class="text-muted text-sm">
+              {{ user.created_at.strftime('%d %b %Y') if user.created_at else '—' }}
+            </td>
+            <td>
+              {% if user.user_id != session.user_id %}
+              <button class="btn btn-sm {% if user.is_active %}btn-danger{% else %}btn-success{% endif %}"
+                      data-toggle-url="{{ url_for('admin.toggle_user', user_id=user.user_id) }}"
+                      data-confirm="{% if user.is_active %}Deactivate {{ user.full_name }}?{% else %}Activate {{ user.full_name }}?{% endif %}">
+                {% if user.is_active %}Deactivate{% else %}Activate{% endif %}
+              </button>
+              {% else %}
+              <span class="text-muted text-xs">(you)</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:40px;">
+      <div class="empty-state-icon">👥</div>
+      <div class="empty-state-title">No users found</div>
+      <div class="empty-state-text">
+        {% if search or role_filter %}Try different search terms.{% else %}No users registered yet.{% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "public_base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+<div class="error-page-container">
+  <div class="error-content">
+    <div class="error-icon">🔧</div>
+    <h1 class="error-title">500 — Server Error</h1>
+    <p class="error-description">
+      Something went wrong on our end. The error has been logged and will be investigated.
+      Please try again in a moment.
+    </p>
+    <div class="error-actions">
+      <a href="{{ url_for('main.home') }}" class="btn btn-primary">
+        Return Home
+      </a>
+    </div>
+  </div>
+</div>
+
+{% include 'errors/error_styles.html' %}
+{% endblock %}
