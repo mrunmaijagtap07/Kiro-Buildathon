@@ -7,11 +7,11 @@
 <div class="page-header">
   <div class="page-header-row">
     <div>
-      <h1 class="page-header-title">Welcome, {{ session.full_name }} 👋</h1>
+      <h1 class="page-header-title">Welcome, {{ session.full_name }} </h1>
       <p class="page-header-subtitle">Here's a summary of your project submissions</p>
     </div>
     <a href="{{ url_for('student.create_project') }}" class="btn btn-primary">
-      ➕ Submit New Project
+      <span class="ca-icon ca-icon-plus" aria-hidden="true"></span> Submit New Project
     </a>
   </div>
 </div>
@@ -19,27 +19,27 @@
 <!-- Stats -->
 <div class="stat-grid mb-4">
   <div class="stat-card">
-    <div class="stat-icon blue">📋</div>
+    <div class="stat-icon blue"><span class="ca-icon ca-icon-list" aria-hidden="true"></span></div>
     <div class="stat-value">{{ stats.total or 0 }}</div>
     <div class="stat-label">Total Submissions</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon yellow">⏳</div>
+    <div class="stat-icon yellow"><span class="ca-icon ca-icon-calendar" aria-hidden="true"></span></div>
     <div class="stat-value">{{ stats.pending or 0 }}</div>
     <div class="stat-label">Pending Review</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon green">✅</div>
+    <div class="stat-icon green"><span class="ca-icon ca-icon-check" aria-hidden="true"></span></div>
     <div class="stat-value">{{ stats.approved or 0 }}</div>
     <div class="stat-label">Approved</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon blue">📝</div>
+    <div class="stat-icon blue"><span class="ca-icon ca-icon-edit" aria-hidden="true"></span></div>
     <div class="stat-value">{{ stats.needs_revision or 0 }}</div>
     <div class="stat-label">Revision Required</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon red">✗</div>
+    <div class="stat-icon red"></div>
     <div class="stat-value">{{ stats.rejected or 0 }}</div>
     <div class="stat-label">Rejected</div>
   </div>
@@ -82,7 +82,7 @@
             </td>
             <td>
               <a href="{{ url_for('student.project_detail', project_id=proj.project_id) }}"
-                 class="btn btn-ghost btn-sm">View →</a>
+                 class="btn btn-ghost btn-sm">View <span class="arrow-icon">→</span></a>
             </td>
           </tr>
           {% endfor %}
@@ -91,7 +91,7 @@
     </div>
     {% else %}
     <div class="empty-state" style="padding:40px;">
-      <div class="empty-state-icon">📂</div>
+      <div class="empty-state-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
       <div class="empty-state-title">No submissions yet</div>
       <div class="empty-state-text">You haven't submitted a project yet. Start by submitting your capstone project.</div>
       <a href="{{ url_for('student.create_project') }}" class="btn btn-primary mt-3">Submit Your First Project</a>
@@ -116,7 +116,7 @@
             <td><a href="{{ url_for('projects.detail', project_id=proj.project_id) }}" style="color:var(--color-text); font-weight:600;">{{ proj.title }}</a></td>
             <td class="text-muted text-sm">{{ proj.lead_name }}</td>
             <td><span class="badge {{ status_badge_class(proj.status) }}">{{ status_display(proj.status) }}</span></td>
-            <td><a href="{{ url_for('projects.detail', project_id=proj.project_id) }}" class="btn btn-ghost btn-sm">View →</a></td>
+            <td><a href="{{ url_for('projects.detail', project_id=proj.project_id) }}" class="btn btn-ghost btn-sm">View <span class="arrow-icon">→</span></a></td>
           </tr>
           {% endfor %}
         </tbody>

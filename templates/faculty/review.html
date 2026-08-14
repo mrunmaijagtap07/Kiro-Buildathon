@@ -15,7 +15,7 @@
         <span class="text-muted text-sm">{{ project.dept_name }}</span>
       </div>
     </div>
-    <a href="{{ url_for('faculty.reviews') }}" class="btn btn-secondary btn-sm">← Back to Queue</a>
+    <a href="{{ url_for('faculty.reviews') }}" class="btn btn-secondary btn-sm"><span class="arrow-icon">←</span> Back to Queue</a>
   </div>
 </div>
 
@@ -59,7 +59,7 @@
              style="padding:12px; background:var(--color-surface-alt); border-radius:var(--radius);">
           <div>
             <div class="font-bold text-sm">
-              {% if att.file_type == 'REPORT_PDF' %}📄{% elif att.file_type == 'SOURCE_ZIP' %}💾{% else %}🖼️{% endif %}
+              {% if att.file_type == 'REPORT_PDF' %}<span class="ca-icon ca-icon-book" aria-hidden="true"></span>{% elif att.file_type == 'SOURCE_ZIP' %}<span class="ca-icon ca-icon-archive" aria-hidden="true"></span>{% else %}<span class="ca-icon ca-icon-archive" aria-hidden="true"></span>{% endif %}
               {{ att.original_name }}
             </div>
             <div class="text-muted text-xs">{{ att.file_type }} · {{ human_readable_size(att.file_size_bytes) }}</div>
@@ -152,19 +152,19 @@
 
               <label class="decision-card" id="card-approve">
                 <input type="radio" name="decision" value="APPROVED" required>
-                <div class="decision-icon">✅</div>
+                <div class="decision-icon"><span class="ca-icon ca-icon-check" aria-hidden="true"></span></div>
                 <div class="decision-label">Approve</div>
               </label>
 
               <label class="decision-card" id="card-revision">
                 <input type="radio" name="decision" value="REVISION_REQUESTED">
-                <div class="decision-icon">📝</div>
+                <div class="decision-icon"><span class="ca-icon ca-icon-edit" aria-hidden="true"></span></div>
                 <div class="decision-label">Request Revision</div>
               </label>
 
               <label class="decision-card" id="card-reject">
                 <input type="radio" name="decision" value="REJECTED">
-                <div class="decision-icon">❌</div>
+                <div class="decision-icon"><span class="ca-icon ca-icon-logout" aria-hidden="true"></span></div>
                 <div class="decision-label">Reject</div>
               </label>
 

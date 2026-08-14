@@ -91,12 +91,12 @@
           <div class="team-member-row d-flex gap-2 mb-2">
             <input type="email" name="team_members" class="form-control"
                    placeholder="Co-author email address (e.g. teammate@college.edu)">
-            <button type="button" class="btn btn-ghost btn-icon remove-member" title="Remove" aria-label="Remove member">✕</button>
+            <button type="button" class="btn btn-ghost btn-icon remove-member" title="Remove" aria-label="Remove member"><span aria-hidden="true">×</span></button>
           </div>
         </div>
 
         <button type="button" class="btn btn-secondary btn-sm mt-2" id="add-member">
-          ➕ Add Another Team Member
+          <span class="ca-icon ca-icon-plus" aria-hidden="true"></span> Add Another Team Member
         </button>
         <div class="form-hint mt-2">Enter each team member's registered email. They must already have an account.</div>
       </div>
@@ -135,7 +135,7 @@
             </label>
             <div class="file-upload">
               <input type="file" name="report_pdf" id="report_pdf" accept=".pdf">
-              <div class="file-upload-icon">📄</div>
+              <div class="file-upload-icon"><span class="ca-icon ca-icon-book" aria-hidden="true"></span></div>
               <div class="file-upload-text">Click or drag to upload PDF</div>
               <div class="file-upload-name" id="report-name">No file selected</div>
             </div>
@@ -148,7 +148,7 @@
             </label>
             <div class="file-upload">
               <input type="file" name="source_zip" id="source_zip" accept=".zip">
-              <div class="file-upload-icon">💾</div>
+              <div class="file-upload-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
               <div class="file-upload-text">Click or drag to upload ZIP</div>
               <div class="file-upload-name" id="source-name">No file selected</div>
             </div>
@@ -161,7 +161,7 @@
           <div class="file-upload" style="max-width: 400px;">
             <input type="file" name="diagram" id="diagram"
                    accept=".pdf,.png,.jpg,.jpeg,.gif,.svg">
-            <div class="file-upload-icon">🖼️</div>
+            <div class="file-upload-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
             <div class="file-upload-text">Click or drag to upload diagram</div>
             <div class="file-upload-name" id="diagram-name">No file selected</div>
           </div>
@@ -175,7 +175,7 @@
     <div class="d-flex gap-2 justify-between">
       <a href="{{ url_for('student.dashboard') }}" class="btn btn-secondary">Cancel</a>
       <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">
-        📤 Submit Project
+        <span class="ca-icon ca-icon-upload" aria-hidden="true"></span> Submit Project
       </button>
     </div>
 
@@ -235,7 +235,7 @@
     row.innerHTML = `
       <input type="email" name="team_members" class="form-control"
              placeholder="Co-author email address">
-      <button type="button" class="btn btn-ghost btn-icon remove-member" title="Remove" aria-label="Remove">✕</button>
+      <button type="button" class="btn btn-ghost btn-icon remove-member" title="Remove" aria-label="Remove"><span aria-hidden="true">×</span></button>
     `;
     list.appendChild(row);
   });

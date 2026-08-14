@@ -523,7 +523,7 @@
     
     <!-- Quick Search -->
     <form action="{{ url_for('projects.browse') }}" method="get" class="browse-search-bar">
-      <span style="color: var(--color-text-muted); font-size: 1rem;">🔍</span>
+      <span style="color: var(--color-text-muted); font-size: 1rem;"><span class="ca-icon ca-icon-search" aria-hidden="true"></span></span>
       <input type="text" 
              name="q" 
              placeholder="Search by title, keyword, or technology..." 
@@ -627,7 +627,7 @@
         <a href="{{ url_for('projects.detail', project_id=proj.project_id) }}" class="project-card-premium">
           <div class="project-header-section">
             <div class="project-dept-badge">
-              <span>🏛️</span>
+              <span><span class="ca-icon ca-icon-building" aria-hidden="true"></span></span>
               <span>{{ proj.dept_name }}</span>
             </div>
             <h3 class="card-title">{{ proj.title }}</h3>
@@ -637,11 +637,11 @@
           <div class="project-body-section">
             <div class="project-meta-grid">
               <div class="meta-item-inline">
-                <span>📅</span>
+                <span><span class="ca-icon ca-icon-calendar" aria-hidden="true"></span></span>
                 <span>{{ proj.academic_year }}–{{ proj.academic_year + 1 }}</span>
               </div>
               <div class="meta-item-inline">
-                <span>👨‍🏫</span>
+                <span><span class="ca-icon ca-icon-users" aria-hidden="true"></span></span>
                 <span>{{ proj.guide_name }}</span>
               </div>
             </div>
@@ -659,7 +659,7 @@
             </div>
             {% endif %}
             <div class="project-views">
-              <span>👁</span>
+              <span><span class="ca-icon ca-icon-search" aria-hidden="true"></span></span>
               <span>{{ proj.views_count }}</span>
             </div>
           </div>
@@ -672,9 +672,9 @@
       <div class="pagination-premium">
         {% if page > 1 %}
         <a href="{{ url_for('projects.browse', page=page-1, q=search, dept=selected_dept, year=selected_year, guide=selected_guide, tag=selected_tag) }}"
-           class="page-btn-premium">← Prev</a>
+           class="page-btn-premium"><span class="arrow-icon">←</span> Prev</a>
         {% else %}
-        <button class="page-btn-premium" disabled>← Prev</button>
+        <button class="page-btn-premium" disabled><span class="arrow-icon">←</span> Prev</button>
         {% endif %}
         
         {% for p in range(1, pages+1) %}
@@ -690,9 +690,9 @@
         
         {% if page < pages %}
         <a href="{{ url_for('projects.browse', page=page+1, q=search, dept=selected_dept, year=selected_year, guide=selected_guide, tag=selected_tag) }}"
-           class="page-btn-premium">Next →</a>
+           class="page-btn-premium">Next <span class="arrow-icon">→</span></a>
         {% else %}
-        <button class="page-btn-premium" disabled>Next →</button>
+        <button class="page-btn-premium" disabled>Next <span class="arrow-icon">→</span></button>
         {% endif %}
       </div>
       {% endif %}
@@ -700,7 +700,7 @@
       {% else %}
       <!-- Empty State -->
       <div class="empty-state" style="padding: 80px 40px;">
-        <div class="empty-state-icon">🔍</div>
+        <div class="empty-state-icon"><span class="ca-icon ca-icon-search" aria-hidden="true"></span></div>
         <div class="empty-state-title">
           {% if search or selected_dept or selected_year or selected_guide or selected_tag %}
             No projects match your filters

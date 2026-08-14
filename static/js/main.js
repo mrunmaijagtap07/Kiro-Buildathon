@@ -16,18 +16,18 @@ function showToast(message, type = "info", duration = 4000) {
   }
 
   const icons = {
-    success: "✓",
-    danger:  "✕",
-    warning: "⚠",
-    info:    "ℹ",
+    success: "OK",
+    danger:  "×",
+    warning: "!",
+    info:    "i",
   };
 
   const toast = document.createElement("div");
   toast.className = `toast toast-${type}`;
   toast.innerHTML = `
-    <span class="toast-icon">${icons[type] || "ℹ"}</span>
+    <span class="toast-icon">${icons[type] || "i"}</span>
     <span class="toast-message">${escapeHtml(message)}</span>
-    <button class="btn btn-ghost btn-icon btn-sm toast-close" aria-label="Dismiss">✕</button>
+    <button class="btn btn-ghost btn-icon btn-sm toast-close" aria-label="Dismiss">×</button>
   `;
 
   toast.querySelector(".toast-close").addEventListener("click", () => dismissToast(toast));

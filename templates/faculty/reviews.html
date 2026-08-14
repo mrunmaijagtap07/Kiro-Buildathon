@@ -64,7 +64,7 @@
             <td>
               <a href="{{ url_for('faculty.review', project_id=proj.project_id) }}"
                  class="btn btn-{% if proj.status == 'PENDING' %}primary{% else %}secondary{% endif %} btn-sm">
-                {% if proj.status == 'PENDING' %}Review →{% else %}View{% endif %}
+                {% if proj.status == 'PENDING' %}Review <span class="arrow-icon">→</span>{% else %}View{% endif %}
               </a>
             </td>
           </tr>
@@ -78,7 +78,7 @@
 <div class="card">
   <div class="card-body">
     <div class="empty-state">
-      <div class="empty-state-icon">📋</div>
+      <div class="empty-state-icon"><span class="ca-icon ca-icon-list" aria-hidden="true"></span></div>
       <div class="empty-state-title">No projects found</div>
       <div class="empty-state-text">
         {% if status_filter %}

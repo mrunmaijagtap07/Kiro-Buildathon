@@ -7,7 +7,7 @@
 <div class="page-header">
   <div class="page-header-row">
     <h1 class="page-header-title">Technology Tags</h1>
-    <button class="btn btn-primary" data-modal-open="add-tag-modal">➕ Add Tag</button>
+    <button class="btn btn-primary" data-modal-open="add-tag-modal"><span class="ca-icon ca-icon-plus" aria-hidden="true"></span> Add Tag</button>
   </div>
 </div>
 
@@ -52,7 +52,7 @@
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title">Add Technology Tag</h2>
-      <button class="modal-close" data-modal-close="add-tag-modal" aria-label="Close">✕</button>
+      <button class="modal-close" data-modal-close="add-tag-modal" aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
     <form method="POST" action="{{ url_for('admin.add_tag') }}">
       <div class="modal-body">

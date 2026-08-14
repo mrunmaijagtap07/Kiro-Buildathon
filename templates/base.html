@@ -33,8 +33,8 @@
   <aside class="sidebar" role="navigation" aria-label="Main navigation">
     <div class="sidebar-header">
       <a href="{{ url_for('main.home') }}" class="sidebar-logo">
-        <div class="logo-icon" aria-hidden="true"></div>
-        <span>CampusArchive</span>
+        <img src="{{ url_for('static', filename='icons/campusarchive-crest.svg') }}" alt="" class="brand-crest sidebar-crest">
+        <span class="brand-copy"><strong>CampusArchive</strong><small>Preserve. Discover. Build.</small></span>
       </a>
     </div>
 
@@ -45,60 +45,60 @@
       <span class="nav-section-label">Navigate</span>
       <a href="{{ url_for('main.home') }}"
          class="nav-item {% if request.endpoint == 'main.home' %}active{% endif %}">
-        <span class="nav-icon">🏠</span> Home
+        <span class="nav-icon"><span class="ca-icon ca-icon-home" aria-hidden="true"></span></span> Home
       </a>
       <a href="{{ url_for('projects.browse') }}"
          class="nav-item {% if request.endpoint == 'projects.browse' %}active{% endif %}">
-        <span class="nav-icon">🔍</span> Browse Projects
+        <span class="nav-icon"><span class="ca-icon ca-icon-search" aria-hidden="true"></span></span> Browse Projects
       </a>
 
       {% if role == 'STUDENT' %}
       <span class="nav-section-label">Student</span>
       <a href="{{ url_for('student.dashboard') }}"
          class="nav-item {% if request.endpoint == 'student.dashboard' %}active{% endif %}">
-        <span class="nav-icon">📊</span> My Dashboard
+        <span class="nav-icon"><span class="ca-icon ca-icon-chart" aria-hidden="true"></span></span> My Dashboard
       </a>
       <a href="{{ url_for('student.create_project') }}"
          class="nav-item {% if request.endpoint == 'student.create_project' %}active{% endif %}">
-        <span class="nav-icon">➕</span> Submit Project
+        <span class="nav-icon"><span class="ca-icon ca-icon-plus" aria-hidden="true"></span></span> Submit Project
       </a>
       <a href="{{ url_for('student.my_projects') }}"
          class="nav-item {% if request.endpoint == 'student.my_projects' %}active{% endif %}">
-        <span class="nav-icon">📋</span> My Submissions
+        <span class="nav-icon"><span class="ca-icon ca-icon-list" aria-hidden="true"></span></span> My Submissions
       </a>
 
       {% elif role == 'FACULTY' %}
       <span class="nav-section-label">Faculty</span>
       <a href="{{ url_for('faculty.dashboard') }}"
          class="nav-item {% if request.endpoint == 'faculty.dashboard' %}active{% endif %}">
-        <span class="nav-icon">📊</span> Dashboard
+        <span class="nav-icon"><span class="ca-icon ca-icon-chart" aria-hidden="true"></span></span> Dashboard
       </a>
       <a href="{{ url_for('faculty.reviews') }}"
          class="nav-item {% if request.endpoint == 'faculty.reviews' %}active{% endif %}">
-        <span class="nav-icon">📝</span> Review Queue
+        <span class="nav-icon"><span class="ca-icon ca-icon-edit" aria-hidden="true"></span></span> Review Queue
       </a>
 
       {% elif role == 'ADMIN' %}
       <span class="nav-section-label">Admin</span>
       <a href="{{ url_for('admin.dashboard') }}"
          class="nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
-        <span class="nav-icon">📊</span> Dashboard
+        <span class="nav-icon"><span class="ca-icon ca-icon-chart" aria-hidden="true"></span></span> Dashboard
       </a>
       <a href="{{ url_for('admin.users') }}"
          class="nav-item {% if request.endpoint == 'admin.users' %}active{% endif %}">
-        <span class="nav-icon">👥</span> Users
+        <span class="nav-icon"><span class="ca-icon ca-icon-users" aria-hidden="true"></span></span> Users
       </a>
       <a href="{{ url_for('admin.departments') }}"
          class="nav-item {% if request.endpoint == 'admin.departments' %}active{% endif %}">
-        <span class="nav-icon">🏛️</span> Departments
+        <span class="nav-icon"><span class="ca-icon ca-icon-building" aria-hidden="true"></span></span> Departments
       </a>
       <a href="{{ url_for('admin.tags') }}"
          class="nav-item {% if request.endpoint == 'admin.tags' %}active{% endif %}">
-        <span class="nav-icon">🏷️</span> Tags
+        <span class="nav-icon"><span class="ca-icon ca-icon-tag" aria-hidden="true"></span></span> Tags
       </a>
       <a href="{{ url_for('admin.statistics') }}"
          class="nav-item {% if request.endpoint == 'admin.statistics' %}active{% endif %}">
-        <span class="nav-icon">📈</span> Statistics
+        <span class="nav-icon"><span class="ca-icon ca-icon-chart" aria-hidden="true"></span></span> Statistics
       </a>
       {% endif %}
     </nav>
@@ -113,7 +113,7 @@
            class="btn btn-ghost btn-sm"
            style="color: var(--sidebar-text);"
            title="Logout">
-          🚪
+          <span class="ca-icon ca-icon-logout" aria-hidden="true"></span>
         </a>
       </div>
     </div>
@@ -124,16 +124,11 @@
 
     <header class="topbar">
       <div class="topbar-left">
-        <button class="sidebar-toggle" aria-label="Toggle sidebar">
-          ☰
-        </button>
+        <button class="sidebar-toggle" aria-label="Toggle sidebar"><span class="ca-icon ca-icon-menu" aria-hidden="true"></span></button>
         <span class="topbar-title">{% block page_title %}{% endblock %}</span>
       </div>
       <div class="topbar-right">
-        <button class="theme-toggle" aria-label="Toggle theme">
-          <span class="theme-icon-moon">🌙</span>
-          <span class="theme-icon-sun hidden">☀️</span>
-        </button>
+        <button class="theme-toggle" aria-label="Toggle theme"><span class="theme-icon-moon"><span class="ca-icon ca-icon-moon" aria-hidden="true"></span></span><span class="theme-icon-sun hidden"><span class="ca-icon ca-icon-sun" aria-hidden="true"></span></span></button>
       </div>
     </header>
 
@@ -144,7 +139,7 @@
         {% for category, message in messages %}
         <div class="alert alert-{{ category }}" data-auto-dismiss role="alert">
           <span>{{ message }}</span>
-          <button class="alert-close" aria-label="Dismiss">✕</button>
+          <button class="alert-close" aria-label="Dismiss"><span aria-hidden="true">×</span></button>
         </div>
         {% endfor %}
       </div>

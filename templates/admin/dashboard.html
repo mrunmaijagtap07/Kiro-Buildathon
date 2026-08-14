@@ -13,27 +13,27 @@
 <h2 class="text-sm font-bold" style="text-transform:uppercase; letter-spacing:.08em; color:var(--color-text-muted); margin-bottom:12px;">Users</h2>
 <div class="stat-grid mb-4">
   <div class="stat-card">
-    <div class="stat-icon blue">👥</div>
+    <div class="stat-icon blue"><span class="ca-icon ca-icon-users" aria-hidden="true"></span></div>
     <div class="stat-value">{{ user_stats.total_users or 0 }}</div>
     <div class="stat-label">Total Users</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon green">🎓</div>
+    <div class="stat-icon green"><span class="ca-icon ca-icon-users" aria-hidden="true"></span></div>
     <div class="stat-value">{{ user_stats.students or 0 }}</div>
     <div class="stat-label">Students</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon purple">👨‍🏫</div>
+    <div class="stat-icon purple"><span class="ca-icon ca-icon-users" aria-hidden="true"></span></div>
     <div class="stat-value">{{ user_stats.faculty or 0 }}</div>
     <div class="stat-label">Faculty</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon yellow">🔑</div>
+    <div class="stat-icon yellow"><span class="ca-icon ca-icon-check" aria-hidden="true"></span></div>
     <div class="stat-value">{{ user_stats.admins or 0 }}</div>
     <div class="stat-label">Admins</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon red">🚫</div>
+    <div class="stat-icon red"><span class="ca-icon ca-icon-logout" aria-hidden="true"></span></div>
     <div class="stat-value">{{ user_stats.inactive or 0 }}</div>
     <div class="stat-label">Inactive Accounts</div>
   </div>
@@ -43,27 +43,27 @@
 <h2 class="text-sm font-bold" style="text-transform:uppercase; letter-spacing:.08em; color:var(--color-text-muted); margin-bottom:12px;">Projects</h2>
 <div class="stat-grid mb-4">
   <div class="stat-card">
-    <div class="stat-icon blue">📋</div>
+    <div class="stat-icon blue"><span class="ca-icon ca-icon-list" aria-hidden="true"></span></div>
     <div class="stat-value">{{ project_stats.total or 0 }}</div>
     <div class="stat-label">Total Projects</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon green">✅</div>
+    <div class="stat-icon green"><span class="ca-icon ca-icon-check" aria-hidden="true"></span></div>
     <div class="stat-value">{{ project_stats.approved or 0 }}</div>
     <div class="stat-label">Approved</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon yellow">⏳</div>
+    <div class="stat-icon yellow"><span class="ca-icon ca-icon-calendar" aria-hidden="true"></span></div>
     <div class="stat-value">{{ project_stats.pending or 0 }}</div>
     <div class="stat-label">Pending Review</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon blue">📝</div>
+    <div class="stat-icon blue"><span class="ca-icon ca-icon-edit" aria-hidden="true"></span></div>
     <div class="stat-value">{{ project_stats.needs_revision or 0 }}</div>
     <div class="stat-label">Needs Revision</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon red">✗</div>
+    <div class="stat-icon red"></div>
     <div class="stat-value">{{ project_stats.rejected or 0 }}</div>
     <div class="stat-label">Rejected</div>
   </div>
@@ -72,12 +72,12 @@
 <!-- Other stats -->
 <div class="stat-grid mb-4">
   <div class="stat-card">
-    <div class="stat-icon purple">🏛️</div>
+    <div class="stat-icon purple"><span class="ca-icon ca-icon-building" aria-hidden="true"></span></div>
     <div class="stat-value">{{ dept_count.cnt or 0 }}</div>
     <div class="stat-label">Active Departments</div>
   </div>
   <div class="stat-card">
-    <div class="stat-icon blue">🏷️</div>
+    <div class="stat-icon blue"><span class="ca-icon ca-icon-tag" aria-hidden="true"></span></div>
     <div class="stat-value">{{ tag_count.cnt or 0 }}</div>
     <div class="stat-label">Technology Tags</div>
   </div>
@@ -85,10 +85,10 @@
 
 <!-- Quick links -->
 <div class="d-flex gap-3 mb-4 flex-wrap">
-  <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">👥 Manage Users</a>
-  <a href="{{ url_for('admin.departments') }}" class="btn btn-secondary">🏛️ Manage Departments</a>
-  <a href="{{ url_for('admin.tags') }}" class="btn btn-secondary">🏷️ Manage Tags</a>
-  <a href="{{ url_for('admin.statistics') }}" class="btn btn-secondary">📈 Detailed Statistics</a>
+  <a href="{{ url_for('admin.users') }}" class="btn btn-secondary"><span class="ca-icon ca-icon-users" aria-hidden="true"></span> Manage Users</a>
+  <a href="{{ url_for('admin.departments') }}" class="btn btn-secondary"><span class="ca-icon ca-icon-building" aria-hidden="true"></span> Manage Departments</a>
+  <a href="{{ url_for('admin.tags') }}" class="btn btn-secondary"><span class="ca-icon ca-icon-tag" aria-hidden="true"></span> Manage Tags</a>
+  <a href="{{ url_for('admin.statistics') }}" class="btn btn-secondary"><span class="ca-icon ca-icon-chart" aria-hidden="true"></span> Detailed Statistics</a>
 </div>
 
 <!-- Recent project activity -->
@@ -123,7 +123,7 @@
     </div>
     {% else %}
     <div class="empty-state" style="padding:32px;">
-      <div class="empty-state-icon">📂</div>
+      <div class="empty-state-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
       <div class="empty-state-title">No projects yet</div>
     </div>
     {% endif %}
