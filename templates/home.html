@@ -50,7 +50,7 @@
 }
 
 .hero-eyebrow::before {
-  content: "📚";
+  content: "<span class="ca-icon ca-icon-book" aria-hidden="true"></span>";
   font-size: 0.9rem;
 }
 
@@ -723,7 +723,7 @@
       
       <!-- Search Bar -->
       <form action="{{ url_for('projects.browse') }}" method="get" class="hero-search">
-        <span class="hero-search-icon">🔍</span>
+        <span class="hero-search-icon"><span class="ca-icon ca-icon-search" aria-hidden="true"></span></span>
         <input type="text" 
                name="q" 
                placeholder="Search projects, technologies, departments..." 
@@ -733,15 +733,15 @@
       
       <div class="hero-ctas">
         <a href="{{ url_for('projects.browse') }}" class="btn-explore">
-          Explore Archive →
+          Explore Archive <span class="arrow-icon">→</span>
         </a>
         {% if not session.get('user_id') %}
         <a href="{{ url_for('auth.register') }}" class="btn-submit">
-          Submit Your Project ↑
+          Submit Your Project <span class="arrow-icon">↗</span>
         </a>
         {% elif session.get('role') == 'STUDENT' %}
         <a href="{{ url_for('student.create_project') }}" class="btn-submit">
-          Submit Your Project ↑
+          Submit Your Project <span class="arrow-icon">↗</span>
         </a>
         {% endif %}
       </div>
@@ -757,7 +757,7 @@
 <section class="stats-bar">
   <div class="stats-grid">
     <div class="stat-item">
-      <div class="stat-icon-wrapper">📚</div>
+      <div class="stat-icon-wrapper"><span class="ca-icon ca-icon-book" aria-hidden="true"></span></div>
       <span class="stat-number">
         {% if stats and stats.approved_projects is not none %}
           {{ "{:,}".format(stats.approved_projects) }}
@@ -768,7 +768,7 @@
     </div>
     
     <div class="stat-item">
-      <div class="stat-icon-wrapper">🏛️</div>
+      <div class="stat-icon-wrapper"><span class="ca-icon ca-icon-building" aria-hidden="true"></span></div>
       <span class="stat-number">
         {% if stats and stats.departments is not none %}{{ stats.departments }}{% else %}—{% endif %}
       </span>
@@ -777,7 +777,7 @@
     </div>
     
     <div class="stat-item">
-      <div class="stat-icon-wrapper">💻</div>
+      <div class="stat-icon-wrapper"><span class="ca-icon ca-icon-code" aria-hidden="true"></span></div>
       <span class="stat-number">
         {% if stats and stats.tag_count is not none %}{{ stats.tag_count }}{% else %}—{% endif %}
       </span>
@@ -786,7 +786,7 @@
     </div>
     
     <div class="stat-item">
-      <div class="stat-icon-wrapper">👨‍🏫</div>
+      <div class="stat-icon-wrapper"><span class="ca-icon ca-icon-users" aria-hidden="true"></span></div>
       <span class="stat-number">
         {% if stats and stats.faculty_count is not none %}{{ stats.faculty_count }}{% else %}—{% endif %}
       </span>
@@ -811,18 +811,18 @@
     {% for proj in recent_projects %}
     <a href="{{ url_for('projects.detail', project_id=proj.project_id) }}" class="project-card-v2">
       <div class="project-card-image">
-        💡
+        <span class="ca-icon ca-icon-book" aria-hidden="true"></span>
       </div>
       <div class="project-card-body">
         <div class="project-category">{{ proj.dept_name or 'General' }}</div>
         <h3 class="project-title">{{ proj.title }}</h3>
         <div class="project-meta-list">
           <div class="project-meta-item">
-            <span>📅</span>
+            <span><span class="ca-icon ca-icon-calendar" aria-hidden="true"></span></span>
             <span>{{ proj.academic_year }}–{{ proj.academic_year + 1 }}</span>
           </div>
           <div class="project-meta-item">
-            <span>👨‍🏫</span>
+            <span><span class="ca-icon ca-icon-users" aria-hidden="true"></span></span>
             <span>{{ proj.guide_name }}</span>
           </div>
         </div>
@@ -843,12 +843,12 @@
   
   <div style="text-align: center;">
     <a href="{{ url_for('projects.browse') }}" class="section-action">
-      View all projects →
+      View all projects <span class="arrow-icon">→</span>
     </a>
   </div>
   {% else %}
   <div class="empty-state-premium">
-    <div class="empty-icon">📂</div>
+    <div class="empty-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
     <h3 class="empty-title">No Projects Archived Yet</h3>
     <p class="empty-description">
       Be the first to contribute to the institutional archive. Submit your capstone project and inspire future batches.
@@ -874,37 +874,37 @@
 
   <div class="tech-grid">
     <a href="{{ url_for('projects.browse', tech='Python') }}" class="tech-card">
-      <div class="tech-icon">🐍</div>
+      <div class="tech-icon"><span class="ca-icon ca-icon-code" aria-hidden="true"></span></div>
       <div class="tech-name">Python</div>
       <div class="tech-count">Machine Learning, Data</div>
     </a>
     
     <a href="{{ url_for('projects.browse', tech='Java') }}" class="tech-card">
-      <div class="tech-icon">☕</div>
+      <div class="tech-icon"><span class="ca-icon ca-icon-code" aria-hidden="true"></span></div>
       <div class="tech-name">Java</div>
       <div class="tech-count">Enterprise, Android</div>
     </a>
     
     <a href="{{ url_for('projects.browse', tech='Web') }}" class="tech-card">
-      <div class="tech-icon">🌐</div>
+      <div class="tech-icon"><span class="ca-icon ca-icon-globe" aria-hidden="true"></span></div>
       <div class="tech-name">Web Dev</div>
       <div class="tech-count">Frontend, Backend</div>
     </a>
     
     <a href="{{ url_for('projects.browse', tech='IoT') }}" class="tech-card">
-      <div class="tech-icon">📡</div>
+      <div class="tech-icon"><span class="ca-icon ca-icon-nodes" aria-hidden="true"></span></div>
       <div class="tech-name">IoT</div>
       <div class="tech-count">Hardware, Sensors</div>
     </a>
     
     <a href="{{ url_for('projects.browse', tech='Machine Learning') }}" class="tech-card">
-      <div class="tech-icon">🤖</div>
+      <div class="tech-icon"><span class="ca-icon ca-icon-brain" aria-hidden="true"></span></div>
       <div class="tech-name">ML & AI</div>
       <div class="tech-count">Neural Networks, Models</div>
     </a>
     
     <a href="{{ url_for('projects.browse', tech='Android') }}" class="tech-card">
-      <div class="tech-icon">📱</div>
+      <div class="tech-icon"><span class="ca-icon ca-icon-device" aria-hidden="true"></span></div>
       <div class="tech-name">Android</div>
       <div class="tech-count">Mobile Apps</div>
     </a>
@@ -912,7 +912,7 @@
   
   <div style="text-align: center; margin-top: 40px;">
     <a href="{{ url_for('projects.browse') }}" class="section-action">
-      View all technologies →
+      View all technologies <span class="arrow-icon">→</span>
     </a>
   </div>
 </section>

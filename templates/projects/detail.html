@@ -365,7 +365,7 @@
 <section class="detail-hero">
   <div class="detail-hero-content">
     <nav class="breadcrumb-nav">
-      <a href="{{ url_for('projects.browse') }}">← Browse Archive</a>
+      <a href="{{ url_for('projects.browse') }}"><span class="arrow-icon">←</span> Browse Archive</a>
       <span style="opacity: 0.6;"> / </span>
       <span>{{ project.dept_name }}</span>
       <span style="opacity: 0.6;"> / </span>
@@ -377,19 +377,19 @@
         <h1 class="project-title-main">{{ project.title }}</h1>
         <div class="project-meta-inline">
           <div class="meta-chip">
-            <span>🏛️</span>
+            <span><span class="ca-icon ca-icon-building" aria-hidden="true"></span></span>
             <span>{{ project.dept_name }}</span>
           </div>
           <div class="meta-chip">
-            <span>📅</span>
+            <span><span class="ca-icon ca-icon-calendar" aria-hidden="true"></span></span>
             <span>{{ project.academic_year }}–{{ project.academic_year + 1 }}</span>
           </div>
           <div class="meta-chip">
-            <span>👨‍🏫</span>
+            <span><span class="ca-icon ca-icon-users" aria-hidden="true"></span></span>
             <span>{{ project.guide_name }}</span>
           </div>
           <div class="meta-chip">
-            <span>👁</span>
+            <span><span class="ca-icon ca-icon-search" aria-hidden="true"></span></span>
             <span>{{ project.views_count }} views</span>
           </div>
         </div>
@@ -411,7 +411,7 @@
       <!-- Abstract -->
       <div class="archive-section">
         <div class="section-header-premium">
-          <span class="section-icon">📝</span>
+          <span class="section-icon"><span class="ca-icon ca-icon-edit" aria-hidden="true"></span></span>
           <h2 class="section-title-premium">Abstract</h2>
         </div>
         <p class="abstract-text">{{ project.abstract }}</p>
@@ -420,7 +420,7 @@
       <!-- Project Team -->
       <div class="archive-section">
         <div class="section-header-premium">
-          <span class="section-icon">👥</span>
+          <span class="section-icon"><span class="ca-icon ca-icon-users" aria-hidden="true"></span></span>
           <h2 class="section-title-premium">Project Team</h2>
         </div>
         {% if authors %}
@@ -462,7 +462,7 @@
       {% if project.status == 'APPROVED' %}
       <div class="archive-section">
         <div class="section-header-premium">
-          <span class="section-icon">📦</span>
+          <span class="section-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></span>
           <h2 class="section-title-premium">Project Files</h2>
         </div>
         
@@ -474,7 +474,7 @@
           {% set has_files.v = true %}
           <div class="file-download-card">
             <div class="file-info">
-              <span class="file-icon">{% if att.file_type == 'REPORT_PDF' %}📄{% else %}🖼️{% endif %}</span>
+              <span class="file-icon">{% if att.file_type == 'REPORT_PDF' %}<span class="ca-icon ca-icon-book" aria-hidden="true"></span>{% else %}<span class="ca-icon ca-icon-archive" aria-hidden="true"></span>{% endif %}</span>
               <div class="file-details">
                 <div class="file-name">{{ att.original_name }}</div>
                 <div class="file-meta">{{ human_readable_size(att.file_size_bytes) }}</div>
@@ -492,7 +492,7 @@
           {% set has_files.v = true %}
           <div class="file-download-card">
             <div class="file-info">
-              <span class="file-icon">💾</span>
+              <span class="file-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></span>
               <div class="file-details">
                 <div class="file-name">{{ att.original_name }}</div>
                 <div class="file-meta">{{ human_readable_size(att.file_size_bytes) }} • Source Code</div>

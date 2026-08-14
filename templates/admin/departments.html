@@ -7,7 +7,7 @@
 <div class="page-header">
   <div class="page-header-row">
     <h1 class="page-header-title">Departments</h1>
-    <button class="btn btn-primary" data-modal-open="add-dept-modal">➕ Add Department</button>
+    <button class="btn btn-primary" data-modal-open="add-dept-modal"><span class="ca-icon ca-icon-plus" aria-hidden="true"></span> Add Department</button>
   </div>
 </div>
 
@@ -53,7 +53,7 @@
   <div class="modal">
     <div class="modal-header">
       <h2 class="modal-title">Add Department</h2>
-      <button class="modal-close" data-modal-close="add-dept-modal" aria-label="Close">✕</button>
+      <button class="modal-close" data-modal-close="add-dept-modal" aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
     <form method="POST" action="{{ url_for('admin.add_department') }}">
       <div class="modal-body">

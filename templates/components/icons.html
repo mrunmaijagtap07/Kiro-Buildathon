@@ -1,0 +1,3 @@
+{% macro icon(name, label='') -%}
+<span class="ca-icon ca-icon-{{ name }}" {% if label %}aria-label="{{ label }}"{% else %}aria-hidden="true"{% endif %}></span>
+{%- endmacro %}

@@ -83,7 +83,7 @@
             <label class="form-label">New Report PDF</label>
             <div class="file-upload">
               <input type="file" name="report_pdf" id="report_pdf" accept=".pdf">
-              <div class="file-upload-icon">📄</div>
+              <div class="file-upload-icon"><span class="ca-icon ca-icon-book" aria-hidden="true"></span></div>
               <div class="file-upload-text">
                 {% for att in current_attachments if att.file_type == 'REPORT_PDF' %}
                 Current: {{ att.original_name }}
@@ -98,7 +98,7 @@
             <label class="form-label">New Source ZIP</label>
             <div class="file-upload">
               <input type="file" name="source_zip" id="source_zip" accept=".zip">
-              <div class="file-upload-icon">💾</div>
+              <div class="file-upload-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
               <div class="file-upload-text">
                 {% for att in current_attachments if att.file_type == 'SOURCE_ZIP' %}
                 Current: {{ att.original_name }}
@@ -116,7 +116,7 @@
           <div class="file-upload" style="max-width:400px;">
             <input type="file" name="diagram" id="diagram"
                    accept=".pdf,.png,.jpg,.jpeg,.gif,.svg">
-            <div class="file-upload-icon">🖼️</div>
+            <div class="file-upload-icon"><span class="ca-icon ca-icon-archive" aria-hidden="true"></span></div>
             <div class="file-upload-text">Click to replace diagram</div>
             <div class="file-upload-name" id="diagram-name"></div>
           </div>
@@ -127,7 +127,7 @@
     <div class="d-flex gap-2 justify-between">
       <a href="{{ url_for('student.project_detail', project_id=project.project_id) }}"
          class="btn btn-secondary">Cancel</a>
-      <button type="submit" class="btn btn-primary btn-lg">🔄 Resubmit for Review</button>
+      <button type="submit" class="btn btn-primary btn-lg"><span class="ca-icon ca-icon-upload" aria-hidden="true"></span> Resubmit for Review</button>
     </div>
 
   </form>

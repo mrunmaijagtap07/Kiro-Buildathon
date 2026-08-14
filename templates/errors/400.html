@@ -3,14 +3,14 @@
 {% block content %}
 <div class="error-page-container">
   <div class="error-content">
-    <div class="error-icon">⚠️</div>
+    <div class="error-icon">!️</div>
     <h1 class="error-title">400 — Bad Request</h1>
     <p class="error-description">
       The request could not be understood. Please check your input and try again.
     </p>
     <div class="error-actions">
       <a href="javascript:history.back()" class="btn btn-secondary">
-        ← Go Back
+        <span class="arrow-icon">←</span> Go Back
       </a>
       <a href="{{ url_for('main.home') }}" class="btn btn-primary">
         Return Home

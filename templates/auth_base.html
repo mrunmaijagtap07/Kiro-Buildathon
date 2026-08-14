@@ -144,17 +144,14 @@
 </head>
 <body>
 
-<button class="theme-toggle theme-corner" aria-label="Toggle theme">
-  <span class="theme-icon-moon">🌙</span>
-  <span class="theme-icon-sun hidden">☀️</span>
-</button>
+<button class="theme-toggle theme-corner" aria-label="Toggle theme"><span class="theme-icon-moon"><span class="ca-icon ca-icon-moon" aria-hidden="true"></span></span><span class="theme-icon-sun hidden"><span class="ca-icon ca-icon-sun" aria-hidden="true"></span></span></button>
 
 <div class="auth-page">
   <div class="auth-container">
     <div class="auth-header">
       <a href="{{ url_for('main.home') }}" class="auth-logo">
-        <div class="auth-logo-icon">📁</div>
-        CampusArchive
+        <img src="{{ url_for('static', filename='icons/campusarchive-crest.svg') }}" alt="" class="brand-crest">
+        <span class="brand-copy"><strong>CampusArchive</strong><small>Preserve. Discover. Build.</small></span>
       </a>
     </div>
 
@@ -163,7 +160,7 @@
         {% for category, message in messages %}
         <div class="alert alert-{{ category }} mb-3" role="alert">
           <span>{{ message }}</span>
-          <button class="alert-close" aria-label="Dismiss">✕</button>
+          <button class="alert-close" aria-label="Dismiss"><span aria-hidden="true">×</span></button>
         </div>
         {% endfor %}
       {% endif %}
