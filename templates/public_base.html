@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" class="bg-background">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#073B2B">
   <title>{% block title %}CampusArchive{% endblock %} — CampusArchive</title>
   <meta name="description" content="CampusArchive — Institutional Student Project Repository">
 
@@ -16,6 +17,7 @@
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/themes.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -26,38 +28,45 @@
 
   <!-- Public navbar -->
   <nav class="public-nav" role="navigation" aria-label="Site navigation">
-    <a href="{{ url_for('main.home') }}" class="nav-brand">
-      <div class="brand-icon" aria-hidden="true"></div>
-      <span>CampusArchive</span>
+    <a href="{{ url_for('main.home') }}" class="nav-brand" aria-label="CampusArchive home">
+      {% include "partials/crest.html" %}
+      <span class="nav-brand-text">
+        <span class="nav-brand-name">CampusArchive</span>
+        <span class="nav-brand-tagline">Preserve. Discover. Build.</span>
+      </span>
     </a>
 
     <div class="nav-links">
       <a href="{{ url_for('main.home') }}"
          class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}">Home</a>
       <a href="{{ url_for('projects.browse') }}"
-         class="nav-link {% if request.endpoint == 'projects.browse' %}active{% endif %}">Browse Projects</a>
+         class="nav-link {% if request.endpoint == 'projects.browse' %}active{% endif %}">Browse</a>
       <a href="{{ url_for('main.about') }}"
          class="nav-link {% if request.endpoint == 'main.about' %}active{% endif %}">About</a>
     </div>
 
     <div class="nav-actions">
-      <button class="theme-toggle" aria-label="Toggle theme">
-        <span class="theme-icon-moon">🌙</span>
-        <span class="theme-icon-sun hidden">☀️</span>
+      <button class="theme-toggle" aria-label="Toggle theme" type="button">
+        <span class="theme-icon-moon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </span>
+        <span class="theme-icon-sun hidden" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </span>
       </button>
       {% if session.get('user_id') %}
         {% set role = session.get('role', '') %}
         {% if role == 'STUDENT' %}
-          <a href="{{ url_for('student.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+          <a href="{{ url_for('student.dashboard') }}" class="btn btn-accent btn-sm">Dashboard</a>
         {% elif role == 'FACULTY' %}
-          <a href="{{ url_for('faculty.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+          <a href="{{ url_for('faculty.dashboard') }}" class="btn btn-accent btn-sm">Dashboard</a>
         {% elif role == 'ADMIN' %}
-          <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary btn-sm">Dashboard</a>
+          <a href="{{ url_for('admin.dashboard') }}" class="btn btn-accent btn-sm">Dashboard</a>
         {% endif %}
         <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary btn-sm">Logout</a>
       {% else %}
-        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary btn-sm">Log In</a>
-        <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-sm">Register</a>
+        <a href="{{ url_for('auth.register') }}" class="nav-link-plain">Register</a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-accent btn-sm">Sign In</a>
       {% endif %}
     </div>
   </nav>
@@ -65,11 +74,11 @@
   <!-- Flash messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-    <div style="padding: 16px 40px 0;">
+    <div class="flash-messages" style="padding: 16px 40px 0;">
       {% for category, message in messages %}
       <div class="alert alert-{{ category }}" data-auto-dismiss role="alert">
         <span>{{ message }}</span>
-        <button class="alert-close" aria-label="Dismiss">✕</button>
+        <button class="alert-close" aria-label="Dismiss">&times;</button>
       </div>
       {% endfor %}
     </div>
@@ -80,16 +89,63 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="public-footer">
-    <div class="footer-content">
-      <div class="footer-text">
-        <strong style="color:#fff">CampusArchive</strong> — Institutional Student Project Repository<br>
-        <span style="font-size:.8rem">Preserving student innovation for future generations.</span>
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="footer-brand">
+        <a href="{{ url_for('main.home') }}" class="footer-logo" aria-label="CampusArchive home">
+          {% include "partials/crest.html" %}
+          <span class="nav-brand-text">
+            <span class="nav-brand-name">CampusArchive</span>
+            <span class="nav-brand-tagline">Preserve. Discover. Build.</span>
+          </span>
+        </a>
+        <p class="footer-desc">
+          A digital archive of student projects to inspire, collaborate and innovate across the campus community.
+        </p>
       </div>
-      <div class="footer-text">
-        <a href="{{ url_for('projects.browse') }}" style="color:var(--sidebar-text); margin-right:16px;">Browse Projects</a>
-        <a href="{{ url_for('main.about') }}" style="color:var(--sidebar-text);">About</a>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Quick Links</h4>
+        <a href="{{ url_for('projects.browse') }}" class="footer-link">Browse Projects</a>
+        {% if session.get('role') == 'STUDENT' %}
+        <a href="{{ url_for('student.create_project') }}" class="footer-link">Submit Project</a>
+        {% else %}
+        <a href="{{ url_for('auth.register') }}" class="footer-link">Submit Project</a>
+        {% endif %}
+        <a href="{{ url_for('main.about') }}" class="footer-link">About</a>
+        <a href="{{ url_for('projects.browse') }}" class="footer-link">Technologies</a>
       </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Resources</h4>
+        <a href="{{ url_for('main.about') }}" class="footer-link">Guidelines</a>
+        <a href="{{ url_for('main.about') }}" class="footer-link">FAQ</a>
+        <a href="{{ url_for('main.about') }}" class="footer-link">Help Center</a>
+        <a href="{{ url_for('main.about') }}" class="footer-link">Contact Us</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Connect</h4>
+        <div class="footer-social">
+          <a href="#" class="social-icon" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.08 1.4-2.08 2.85V21H9z"/></svg>
+          </a>
+          <a href="#" class="social-icon" aria-label="Instagram">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="#" class="social-icon" aria-label="GitHub">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
+          </a>
+        </div>
+        <p class="footer-contact">support@campusarchive.edu</p>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>&copy; {{ now().year if now is defined else 2026 }} CampusArchive. All rights reserved.</span>
+      <span class="footer-bottom-links">
+        <a href="{{ url_for('main.about') }}">Privacy Policy</a>
+        <a href="{{ url_for('main.about') }}">Terms of Service</a>
+      </span>
     </div>
   </footer>
 </div>

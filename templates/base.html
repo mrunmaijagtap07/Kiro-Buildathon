@@ -33,7 +33,7 @@
   <aside class="sidebar" role="navigation" aria-label="Main navigation">
     <div class="sidebar-header">
       <a href="{{ url_for('main.home') }}" class="sidebar-logo">
-        <div class="logo-icon" aria-hidden="true"></div>
+        {% include "partials/crest.html" %}
         <span>CampusArchive</span>
       </a>
     </div>
@@ -45,60 +45,60 @@
       <span class="nav-section-label">Navigate</span>
       <a href="{{ url_for('main.home') }}"
          class="nav-item {% if request.endpoint == 'main.home' %}active{% endif %}">
-        <span class="nav-icon">🏠</span> Home
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M9 21v-6h6v6"/></svg></span> Home
       </a>
       <a href="{{ url_for('projects.browse') }}"
          class="nav-item {% if request.endpoint == 'projects.browse' %}active{% endif %}">
-        <span class="nav-icon">🔍</span> Browse Projects
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span> Browse Projects
       </a>
 
       {% if role == 'STUDENT' %}
       <span class="nav-section-label">Student</span>
       <a href="{{ url_for('student.dashboard') }}"
          class="nav-item {% if request.endpoint == 'student.dashboard' %}active{% endif %}">
-        <span class="nav-icon">📊</span> My Dashboard
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span> My Dashboard
       </a>
       <a href="{{ url_for('student.create_project') }}"
          class="nav-item {% if request.endpoint == 'student.create_project' %}active{% endif %}">
-        <span class="nav-icon">➕</span> Submit Project
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span> Submit Project
       </a>
       <a href="{{ url_for('student.my_projects') }}"
          class="nav-item {% if request.endpoint == 'student.my_projects' %}active{% endif %}">
-        <span class="nav-icon">📋</span> My Submissions
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6a2 2 0 0 1 2 2v0h1a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1"/><rect x="9" y="2" width="6" height="4" rx="1"/></svg></span> My Submissions
       </a>
 
       {% elif role == 'FACULTY' %}
       <span class="nav-section-label">Faculty</span>
       <a href="{{ url_for('faculty.dashboard') }}"
          class="nav-item {% if request.endpoint == 'faculty.dashboard' %}active{% endif %}">
-        <span class="nav-icon">📊</span> Dashboard
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span> Dashboard
       </a>
       <a href="{{ url_for('faculty.reviews') }}"
          class="nav-item {% if request.endpoint == 'faculty.reviews' %}active{% endif %}">
-        <span class="nav-icon">📝</span> Review Queue
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></span> Review Queue
       </a>
 
       {% elif role == 'ADMIN' %}
       <span class="nav-section-label">Admin</span>
       <a href="{{ url_for('admin.dashboard') }}"
          class="nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
-        <span class="nav-icon">📊</span> Dashboard
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg></span> Dashboard
       </a>
       <a href="{{ url_for('admin.users') }}"
          class="nav-item {% if request.endpoint == 'admin.users' %}active{% endif %}">
-        <span class="nav-icon">👥</span> Users
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Users
       </a>
       <a href="{{ url_for('admin.departments') }}"
          class="nav-item {% if request.endpoint == 'admin.departments' %}active{% endif %}">
-        <span class="nav-icon">🏛️</span> Departments
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M4 21V10l8-5 8 5v11M9 21v-6h6v6"/></svg></span> Departments
       </a>
       <a href="{{ url_for('admin.tags') }}"
          class="nav-item {% if request.endpoint == 'admin.tags' %}active{% endif %}">
-        <span class="nav-icon">🏷️</span> Tags
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 12 22l-9-9V4a1 1 0 0 1 1-1h8z"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/></svg></span> Tags
       </a>
       <a href="{{ url_for('admin.statistics') }}"
          class="nav-item {% if request.endpoint == 'admin.statistics' %}active{% endif %}">
-        <span class="nav-icon">📈</span> Statistics
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 14 3-3 3 3 5-5"/></svg></span> Statistics
       </a>
       {% endif %}
     </nav>
@@ -112,8 +112,8 @@
         <a href="{{ url_for('auth.logout') }}"
            class="btn btn-ghost btn-sm"
            style="color: var(--sidebar-text);"
-           title="Logout">
-          🚪
+           title="Logout" aria-label="Logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
         </a>
       </div>
     </div>
@@ -124,15 +124,15 @@
 
     <header class="topbar">
       <div class="topbar-left">
-        <button class="sidebar-toggle" aria-label="Toggle sidebar">
-          ☰
+        <button class="sidebar-toggle" aria-label="Toggle sidebar" type="button">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
         </button>
         <span class="topbar-title">{% block page_title %}{% endblock %}</span>
       </div>
       <div class="topbar-right">
-        <button class="theme-toggle" aria-label="Toggle theme">
-          <span class="theme-icon-moon">🌙</span>
-          <span class="theme-icon-sun hidden">☀️</span>
+        <button class="theme-toggle" aria-label="Toggle theme" type="button">
+          <span class="theme-icon-moon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+          <span class="theme-icon-sun hidden" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
         </button>
       </div>
     </header>

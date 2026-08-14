@@ -64,6 +64,13 @@
   --sidebar-hover: rgba(255,255,255,.10);
   --sidebar-active:#c59849;     /* gold accent for active */
   --sidebar-width: 260px;
+
+  /* Brand crest */
+  --crest-shield: #073B2B;
+  --crest-edge:   #B8892F;
+  --crest-page:   #F4EBDD;
+  --crest-spine:  #B8892F;
+  --crest-line:   #B8892F;
 }
 
 [data-theme="dark"] {
@@ -111,4 +118,11 @@
   --sidebar-text:  #b8c2b4;     /* muted ivory */
   --sidebar-hover: rgba(255,255,255,.08);
   --sidebar-active:#d4a756;     /* bright gold for active */
+
+  /* Brand crest */
+  --crest-shield: #0A3D2E;
+  --crest-edge:   #D2A44C;
+  --crest-page:   #F4EBDD;
+  --crest-spine:  #D2A44C;
+  --crest-line:   #D2A44C;
 }
